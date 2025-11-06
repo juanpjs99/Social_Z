@@ -1,15 +1,98 @@
-import React from 'react';
-import { View, Text, Button } from 'react-native';
+// src/Main/HomeScreen.js
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function HomeScreen({ navigation }) {
+  const [tweets, setTweets] = useState([]);
+
+  useEffect(() => {
+    setTweets([
+      { id: "1", user: "jpablo", content: "Mi primer tweet 🚀" },
+      { id: "2", user: "mateo", content: "Clon de X en marcha 👨‍💻" },
+    ]);
+  }, []);
+
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 22, marginBottom: 20 }}>Inicio</Text>
-      <Button title="Tweet" onPress={() => navigation.navigate('Post')} />
-      <View style={{ marginTop: 20 }}>
-        <Text>Seguidores: 12</Text>
-        <Text>Seguidos: 8</Text>
+    <View style={styles.container}>
+      {/* Encabezado */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Inicio</Text>
+        <TouchableOpacity onPress={() => alert("Crear Tweet pronto!")}>
+          <Ionicons name="create-outline" size={26} color="#1DA1F2" />
+        </TouchableOpacity>
       </View>
+
+      {/* Botones para navegar */}
+      <View style={styles.navButtons}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate("Seguidores")}
+        >
+          <Ionicons name="people-outline" size={22} color="#1DA1F2" />
+          <Text style={styles.navText}>Seguidores</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate("Seguidos")}
+        >
+          <Ionicons name="person-add-outline" size={22} color="#1DA1F2" />
+          <Text style={styles.navText}>Seguidos</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate("Perfil")}
+        >
+          <Ionicons name="person-circle-outline" size={22} color="#1DA1F2" />
+          <Text style={styles.navText}>Perfil</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Feed */}
+      <FlatList
+        data={tweets}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.tweetCard}>
+            <Text style={styles.user}>@{item.user}</Text>
+            <Text style={styles.tweet}>{item.content}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#fff", padding: 15 },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  title: { fontSize: 22, fontWeight: "700", color: "#1DA1F2" },
+  navButtons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 15,
+  },
+  navButton: { alignItems: "center" },
+  navText: { marginTop: 3, color: "#1DA1F2", fontSize: 13 },
+  tweetCard: {
+    backgroundColor: "#f8f9fa",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 10,
+  },
+  user: { fontWeight: "600", marginBottom: 4 },
+  tweet: { fontSize: 15 },
+});

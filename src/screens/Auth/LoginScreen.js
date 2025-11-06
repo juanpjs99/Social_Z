@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import axios from "../../api/api"; // tu configuración de axios
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { loginUser } from "../../api/api"
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -12,26 +13,32 @@ const LoginScreen = () => {
   };
 
   const handleLogin = async () => {
-    if (!form.email || !form.password) {
-      return Alert.alert("Error", "Por favor completa todos los campos");
+  if (!form.email || !form.password) {
+    return Alert.alert("Error", "Por favor completa todos los campos");
+  }
+
+  try {
+    const data = await loginUser(form);
+
+    if (!data.token) {
+      throw new Error(data.message || "Error en el inicio de sesión");
     }
 
-    try {
-      const res = await axios.post("/users/login", form);
-      const { token, username } = res.data;
+    // Guardar token y nombre de usuario
+    await AsyncStorage.setItem("token", data.token);
+    await AsyncStorage.setItem("username", data.username);
 
-      Alert.alert("Bienvenido", `Hola ${username}!`);
-      console.log("Token recibido:", token);
+    Alert.alert("Bienvenido", `Hola ${data.username}!`);
 
-      // Aquí podrías guardar el token en AsyncStorage y redirigir al home:
-      // await AsyncStorage.setItem("token", token);
-      // navigation.replace("Home");
+    // Redirigir al Home (reemplaza la pantalla actual)
+    navigation.replace("MainTabs");
 
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", error.response?.data?.message || "Credenciales inválidas");
-    }
-  };
+  } catch (error) {
+    console.error("Error en login:", error);
+    Alert.alert("Error", error.message || "Credenciales inválidas");
+  }
+};
+
 
   return (
     <View style={styles.container}>
