@@ -87,3 +87,36 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: "Error del servidor" });
   }
 };
+
+// get user profile by username
+export const getUserProfile = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    // find user and exclude password
+    const user = await User.findOne({ username })
+      .select("-password")
+      .populate("followers", "username fullName")
+      .populate("following", "username fullName");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // return profile data with counts
+    res.json({
+      id: user._id,
+      username: user.username,
+      fullName: user.fullName,
+      email: user.email,
+      bio: user.bio,
+      profilePicture: user.profilePicture,
+      followersCount: user.followers.length,
+      followingCount: user.following.length,
+      createdAt: user.createdAt,
+    });
+  } catch (error) {
+    console.error("Error getting user profile:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
