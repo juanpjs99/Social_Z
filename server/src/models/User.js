@@ -24,6 +24,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    bio: {
+      type: String,
+      default: "",
+      maxlength: 160, // keeping it short like twitter
+    },
+    profilePicture: {
+      type: String,
+      default: "", // stores base64 encoded image or URL
+    },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
