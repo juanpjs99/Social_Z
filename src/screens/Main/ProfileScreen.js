@@ -12,9 +12,10 @@ import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { AuthContext } from "../../context/AuthContext";
 import { getUserProfile } from "../../api/api";
+import Header from "../../components/Header";
 
 export default function ProfileScreen({ navigation }) {
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,10 +41,6 @@ export default function ProfileScreen({ navigation }) {
     }, [loadProfile])
   );
 
-  const handleLogout = async () => {
-    await logout();
-  };
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -53,32 +50,34 @@ export default function ProfileScreen({ navigation }) {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header with cover and profile pic */}
-      <View style={styles.header}>
-        <View style={styles.coverPhoto}>
-          {/* simple gradient background as cover */}
+    <View style={styles.container}>
+      <Header title="Profile" />
+      <ScrollView style={styles.scrollContent}>
+        {/* Header with cover and profile pic */}
+        <View style={styles.header}>
+          <View style={styles.coverPhoto}>
+            {/* simple gradient background as cover */}
+          </View>
+
+          {/* Profile Picture */}
+          <View style={styles.profilePicContainer}>
+            {profileData?.profilePicture ? (
+              <Image
+                source={{ uri: profileData.profilePicture }}
+                style={styles.profilePic}
+              />
+            ) : (
+              <View style={[styles.profilePic, styles.defaultPic]}>
+                <Text style={styles.defaultPicText}>
+                  {profileData?.username?.charAt(0).toUpperCase() || "U"}
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
 
-        {/* Profile Picture */}
-        <View style={styles.profilePicContainer}>
-          {profileData?.profilePicture ? (
-            <Image
-              source={{ uri: profileData.profilePicture }}
-              style={styles.profilePic}
-            />
-          ) : (
-            <View style={[styles.profilePic, styles.defaultPic]}>
-              <Text style={styles.defaultPicText}>
-                {profileData?.username?.charAt(0).toUpperCase() || "U"}
-              </Text>
-            </View>
-          )}
-        </View>
-      </View>
-
-      {/* Profile Info */}
-      <View style={styles.infoSection}>
+        {/* Profile Info */}
+        <View style={styles.infoSection}>
         <View style={styles.nameRow}>
           <View>
             <Text style={styles.fullName}>{profileData?.fullName || "User"}</Text>
@@ -95,11 +94,6 @@ export default function ProfileScreen({ navigation }) {
             >
               <Ionicons name="create-outline" size={18} color="#14171A" />
               <Text style={styles.editButtonText}>Edit</Text>
-            </TouchableOpacity>
-
-            {/* Logout button */}
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-              <Ionicons name="log-out-outline" size={22} color="#657786" />
             </TouchableOpacity>
           </View>
         </View>
@@ -137,7 +131,8 @@ export default function ProfileScreen({ navigation }) {
       <View style={styles.tweetsContainer}>
         <Text style={styles.placeholderText}>Your tweets will appear here</Text>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -145,6 +140,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  scrollContent: {
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,
