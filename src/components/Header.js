@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -20,7 +20,16 @@ export default function Header({ title, showBackButton = false }) {
         {
           text: "Cerrar Sesión",
           style: "destructive",
-          onPress: () => logout()
+          onPress: async () => {
+            await logout();
+            // Reset navigation to Login screen
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              })
+            );
+          }
         }
       ]
     );
