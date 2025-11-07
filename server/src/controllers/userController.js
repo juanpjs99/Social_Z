@@ -120,3 +120,38 @@ export const getUserProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// update user profile (name, bio, profile picture)
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { fullName, bio, profilePicture } = req.body;
+
+    // find user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // update fields if provided
+    if (fullName) user.fullName = fullName;
+    if (bio !== undefined) user.bio = bio; // allow empty string
+    if (profilePicture !== undefined) user.profilePicture = profilePicture;
+
+    await user.save();
+
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        fullName: user.fullName,
+        bio: user.bio,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
