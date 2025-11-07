@@ -46,3 +46,19 @@ export const getUserProfile = async (username) => {
     throw error;
   }
 };
+
+// update user profile
+export const updateUserProfile = async (userId, data) => {
+  try {
+    const res = await fetch(`${API_URL}api/users/profile/${userId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    return json;
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw error;
+  }
+};
