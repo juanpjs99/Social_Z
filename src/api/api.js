@@ -59,7 +59,7 @@ export const eliminarTweet = async (tweetId, userId) => {
 // fetch user profile by username
 export const getUserProfile = async (username) => {
   try {
-    const res = await fetch(`${API_URL}api/users/profile/${username}`, {
+    const res = await fetch(`${API_URL}/users/profile/${username}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -74,7 +74,7 @@ export const getUserProfile = async (username) => {
 // update user profile
 export const updateUserProfile = async (userId, data) => {
   try {
-    const res = await fetch(`${API_URL}api/users/profile/${userId}`, {
+    const res = await fetch(`${API_URL}/users/profile/${userId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

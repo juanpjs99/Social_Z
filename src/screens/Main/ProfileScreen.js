@@ -23,9 +23,14 @@ export default function ProfileScreen({ navigation }) {
   const loadProfile = useCallback(async () => {
     setLoading(true);
     try {
+      console.log("Loading profile for user:", user);
       if (user && user.username) {
+        console.log("Fetching profile for username:", user.username);
         const data = await getUserProfile(user.username);
+        console.log("Profile data received:", data);
         setProfileData(data);
+      } else {
+        console.log("No user or username found in context");
       }
     } catch (error) {
       console.error("Error loading profile:", error);
