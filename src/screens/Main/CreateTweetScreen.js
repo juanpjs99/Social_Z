@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, Button, FlatList, Text, Alert, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TextInput, FlatList, Text, Alert, Image, TouchableOpacity, StyleSheet, ScrollView, Button } from "react-native";
 import { launchImageLibrary } from 'react-native-image-picker';
-import { crearTweet, obtenerTweets } from "../../api/api"; // Ajusta ruta
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { crearTweet, obtenerTweets } from "../../api/api";
 
 export default function CrearTweetScreen({ userId }) {
   const [nuevoTweet, setNuevoTweet] = useState("");
@@ -62,43 +63,86 @@ export default function CrearTweetScreen({ userId }) {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="¿Qué está pasando?"
-        value={nuevoTweet}
-        onChangeText={setNuevoTweet}
-        style={styles.input}
-        multiline
-      />
-      
-      {selectedImage && (
-        <View style={styles.imagePreview}>
-          <Image source={{ uri: selectedImage.uri }} style={styles.previewImage} />
+      {/* Create tweet section */}
+      <View style={styles.createSection}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Create Tweet</Text>
+        </View>
+
+        <TextInput
+          placeholder="What's happening?"
+          placeholderTextColor="#999"
+          value={nuevoTweet}
+          onChangeText={setNuevoTweet}
+          style={styles.input}
+          multiline
+          maxLength={280}
+        />
+        
+        <Text style={styles.charCount}>{nuevoTweet.length}/280</Text>
+
+        {selectedImage && (
+          <View style={styles.imagePreview}>
+            <Image source={{ uri: selectedImage.uri }} style={styles.previewImage} />
+            <TouchableOpacity 
+              style={styles.removeButton} 
+              onPress={() => setSelectedImage(null)}
+            >
+              <Ionicons name="close-circle" size={32} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <View style={styles.actionBar}>
           <TouchableOpacity 
-            style={styles.removeButton} 
-            onPress={() => setSelectedImage(null)}
+            style={styles.imageButton} 
+            onPress={seleccionarImagen}
           >
-            <Text style={styles.removeButtonText}>✕</Text>
+            <Ionicons name="image-outline" size={24} color="#1DA1F2" />
+            <Text style={styles.imageButtonText}>Photo</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.tweetButton, (!nuevoTweet.trim() && !selectedImage) && styles.tweetButtonDisabled]} 
+            onPress={publicarTweet}
+            disabled={!nuevoTweet.trim() && !selectedImage}
+          >
+            <Ionicons name="send" size={18} color="#fff" />
+            <Text style={styles.tweetButtonText}>Tweet</Text>
           </TouchableOpacity>
         </View>
-      )}
-
-      <View style={styles.buttonContainer}>
-        <Button title="📷 Imagen" onPress={seleccionarImagen} />
-        <Button title="Publicar" onPress={publicarTweet} />
       </View>
 
+      {/* Divider */}
+      <View style={styles.divider} />
+
+      {/* Tweet feed */}
+      <Text style={styles.feedTitle}>Recent Tweets</Text>
       <FlatList
         data={tweets}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
-          <View style={styles.tweetItem}>
-            <Text style={styles.username}>{item.author.username}</Text>
-            <Text>{item.text}</Text>
-            {item.image && (
-              <Image source={{ uri: item.image }} style={styles.tweetImage} />
-            )}
+          <View style={styles.tweetCard}>
+            <View style={styles.tweetHeader}>
+              <View style={styles.avatarPlaceholder}>
+                <Ionicons name="person" size={20} color="#1DA1F2" />
+              </View>
+              <View style={styles.tweetContent}>
+                <Text style={styles.username}>@{item.author.username}</Text>
+                <Text style={styles.tweetText}>{item.text}</Text>
+                {item.image && (
+                  <Image source={{ uri: item.image }} style={styles.tweetImage} />
+                )}
+              </View>
+            </View>
           </View>
         )}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <Ionicons name="chatbubbles-outline" size={48} color="#ccc" />
+            <Text style={styles.emptyText}>No tweets yet</Text>
+          </View>
+        }
       />
     </View>
   );
@@ -106,59 +150,158 @@ export default function CrearTweetScreen({ userId }) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
     flex: 1,
+    backgroundColor: '#f5f8fa',
+  },
+  createSection: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e1e8ed',
+  },
+  header: {
+    marginBottom: 12,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#14171a',
   },
   input: {
-    borderBottomWidth: 1,
-    marginBottom: 10,
-    minHeight: 60,
+    fontSize: 16,
+    color: '#14171a',
+    minHeight: 100,
     textAlignVertical: 'top',
+    marginBottom: 8,
+  },
+  charCount: {
+    textAlign: 'right',
+    fontSize: 12,
+    color: '#657786',
+    marginBottom: 12,
   },
   imagePreview: {
     position: 'relative',
-    marginBottom: 10,
+    marginBottom: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   previewImage: {
     width: '100%',
     height: 200,
-    borderRadius: 8,
+    borderRadius: 12,
   },
   removeButton: {
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: 8,
+    right: 8,
     backgroundColor: 'rgba(0,0,0,0.6)',
-    borderRadius: 15,
-    width: 30,
-    height: 30,
+    borderRadius: 16,
+    width: 32,
+    height: 32,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  removeButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
+  actionBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    alignItems: 'center',
   },
-  tweetItem: {
-    marginVertical: 10,
-    paddingBottom: 10,
+  imageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    backgroundColor: '#e8f5fe',
+  },
+  imageButtonText: {
+    color: '#1DA1F2',
+    fontWeight: '600',
+    marginLeft: 6,
+    fontSize: 14,
+  },
+  tweetButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1DA1F2',
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: 24,
+    elevation: 2,
+    shadowColor: '#1DA1F2',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  tweetButtonDisabled: {
+    backgroundColor: '#aab8c2',
+    elevation: 0,
+  },
+  tweetButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 15,
+    marginLeft: 6,
+  },
+  divider: {
+    height: 8,
+    backgroundColor: '#e1e8ed',
+  },
+  feedTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#14171a',
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  tweetCard: {
+    backgroundColor: '#fff',
+    padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: '#e1e8ed',
+  },
+  tweetHeader: {
+    flexDirection: 'row',
+  },
+  avatarPlaceholder: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#e8f5fe',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  tweetContent: {
+    flex: 1,
   },
   username: {
     fontWeight: 'bold',
-    marginBottom: 5,
+    fontSize: 15,
+    color: '#14171a',
+    marginBottom: 4,
+  },
+  tweetText: {
+    fontSize: 15,
+    color: '#14171a',
+    lineHeight: 20,
+    marginBottom: 8,
   },
   tweetImage: {
     width: '100%',
     height: 200,
-    marginTop: 10,
-    borderRadius: 8,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 48,
+  },
+  emptyText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#657786',
   },
 });

@@ -145,14 +145,9 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Encabezado */}
+      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Home</Text>
-
-
-        <TouchableOpacity style={styles.newButton} onPress={() => setModalVisible(true)}>
-          <Text style={styles.newButtonText}>New Tweet</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Navigation buttons */}
@@ -213,6 +208,15 @@ export default function HomeScreen({ navigation }) {
           </View>
         )}
       />
+
+      {/* Floating action button */}
+      <TouchableOpacity 
+        style={styles.fab} 
+        onPress={() => setModalVisible(true)}
+        activeOpacity={0.8}
+      >
+        <Ionicons name="add" size={28} color="#fff" />
+      </TouchableOpacity>
 
       {/* Modal to create tweet */}
       <Modal visible={modalVisible} animationType="slide" transparent>
@@ -292,19 +296,22 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
-  },  
-  newButton: {
-    width: 70,
-    height: 36,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#1DA1F2',
+  },
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 80,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#1DA1F2',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  newButtonText: {
-    color: '#1DA1F2',
-    fontWeight: '700',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   tweetHeaderRow: {
     flexDirection: 'row',
