@@ -5,7 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
+  Alert, Image
 } from "react-native";
 import { registerUser } from "../../api/api";
 
@@ -41,7 +41,14 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.logoContainer}>
+      <Image
+        source={require("../../assets/logo.png")} // ruta a tu imagen local
+        style={styles.logo}
+      />
       <Text style={styles.title}>Crear Cuenta</Text>
+      </View>
+      
 
       <TextInput
         style={styles.input}
@@ -92,38 +99,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#101010",
-    padding: 20,
+    paddingHorizontal: 30,
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
-    color: "#fff",
+    fontWeight: "700",
     marginBottom: 30,
+    textAlign: "center",
+    color: "#222",
   },
   input: {
-    width: "100%",
-    backgroundColor: "#1f1f1f",
-    color: "#fff",
-    padding: 15,
-    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 12,
     marginBottom: 15,
+    fontSize: 16,
+    color: "#333",
   },
   button: {
-    width: "100%",
-    backgroundColor: "#28a745",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    marginBottom: 10,
+    backgroundColor: "#8e1f7fff",
+    paddingVertical: 14,
+    borderRadius: 8,
+    marginTop: 10,
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "600",
   },
-  linkText: {
-    color: "#00aaff",
-    marginTop: 10,
+  link: {
+    marginTop: 20,
+    color: "#8e1f7fff",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  logoContainer: {
+    width: "100%",          // ocupa todo el ancho del contenedor
+    alignItems: "center",   // centra horizontalmente
+    marginBottom: 20,       // espacio debajo del logo
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    resizeMode: "contain",  // mantiene proporción
   },
 });

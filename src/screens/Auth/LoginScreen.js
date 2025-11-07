@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { loginUser } from "../../api/api";
 import { AuthContext } from "../../context/AuthContext";
@@ -46,7 +46,17 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.logoContainer}>
+            <Image
+              source={require("../../assets/logo.png")} // ruta a tu imagen local
+              style={styles.logo}
+            />
+            
+      </View>
+            
       <Text style={styles.title}>Iniciar Sesión</Text>
+
+      
 
       <TextInput
         style={styles.input}
@@ -104,7 +114,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   button: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#8e1f7fff",
     paddingVertical: 14,
     borderRadius: 8,
     marginTop: 10,
@@ -117,8 +127,18 @@ const styles = StyleSheet.create({
   },
   link: {
     marginTop: 20,
-    color: "#007bff",
+    color: "#8e1f7fff",
     textAlign: "center",
     fontSize: 16,
+  },
+  logoContainer: {
+    width: "100%",          // ocupa todo el ancho del contenedor
+    alignItems: "center",   // centra horizontalmente
+    marginBottom: 20,       // espacio debajo del logo
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    resizeMode: "contain",  // mantiene proporción
   },
 });
