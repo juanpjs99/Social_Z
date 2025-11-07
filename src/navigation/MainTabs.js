@@ -1,24 +1,38 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableOpacity } from "react-native";
 
 // Import screens (ajustado a tu estructura)
 import HomeScreen from "../screens/Main/HomeScreen";
 import FollowersScreen from "../screens/Main/FollowersScreen";
 import FollowingScreen from "../screens/Main/FollowingsScreen";
 import ProfileScreen from "../screens/Main/ProfileScreen";
-import CreateTweetScreen from "../screens/Main/CreateTweetScreen"; // solo si lo usas dentro del stack
+import EditProfileScreen from "../screens/Main/EditProfileScreen";
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+// Profile Stack to include edit screen
+function ProfileStack({ setUser }) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ProfileMain"
+        options={{ headerShown: false }}
+      >
+        {(props) => <ProfileScreen {...props} setUser={setUser} />}
+      </Stack.Screen>
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 export default function MainTabs({ setUser }) {
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem("token");
-    setUser(null);
-  };
-
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -42,14 +56,10 @@ export default function MainTabs({ setUser }) {
       <Tab.Screen
         name="Perfil"
         options={{
-          headerRight: () => (
-            <TouchableOpacity onPress={handleLogout} style={{ marginRight: 10 }}>
-              <Ionicons name="log-out-outline" size={22} color="#1DA1F2" />
-            </TouchableOpacity>
-          ),
+          headerShown: false,
         }}
       >
-        {(props) => <ProfileScreen {...props} setUser={setUser} />}
+        {(props) => <ProfileStack {...props} setUser={setUser} />}
       </Tab.Screen>
     </Tab.Navigator>
   );

@@ -81,10 +81,23 @@ export default function ProfileScreen({ navigation }) {
             <Text style={styles.username}>@{profileData?.username || "username"}</Text>
           </View>
 
-          {/* Logout button */}
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={22} color="#657786" />
-          </TouchableOpacity>
+          <View style={styles.buttonsRow}>
+            {/* Edit Profile button */}
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() =>
+                navigation.navigate("EditProfile", { profileData })
+              }
+            >
+              <Ionicons name="create-outline" size={18} color="#14171A" />
+              <Text style={styles.editButtonText}>Edit</Text>
+            </TouchableOpacity>
+
+            {/* Logout button */}
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+              <Ionicons name="log-out-outline" size={22} color="#657786" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Bio */}
@@ -183,6 +196,26 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#657786",
     marginTop: 2,
+  },
+  buttonsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  editButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: "#e1e8ed",
+    borderRadius: 20,
+    gap: 6,
+  },
+  editButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#14171A",
   },
   logoutButton: {
     padding: 8,
