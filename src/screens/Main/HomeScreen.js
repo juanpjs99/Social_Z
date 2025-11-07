@@ -193,6 +193,15 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             <Text style={styles.tweet}>{item.text || item.content}</Text>
+            
+            {/* Mostrar imagen si existe */}
+            {item.image && (
+              <Image 
+                source={{ uri: item.image }} 
+                style={styles.tweetImage}
+                resizeMode="cover"
+              />
+            )}
           </View>
         )}
       />
@@ -208,7 +217,7 @@ export default function HomeScreen({ navigation }) {
               value={nuevoTweet}
               onChangeText={setNuevoTweet}
             />
-            <View style={{ marginBottom: 10 }}>
+            <View style={styles.imageButtonContainer}>
               <Button title={image ? 'Quitar imagen' : 'Agregar imagen'} onPress={() => image ? setImage(null) : pickImage()} />
             </View>
             {image ? (
@@ -310,6 +319,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 180,
     borderRadius: 8,
+    marginBottom: 10,
+  },
+  tweetImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  imageButtonContainer: {
     marginBottom: 10,
   },
 
