@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { loginUser } from "../../api/api"
+import { loginUser } from "../../api/api";
+import { AuthContext } from "../../context/AuthContext";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const { login } = useContext(AuthContext);
   const [form, setForm] = useState({ email: "", password: "" });
 
   const handleChange = (key, value) => {
@@ -13,31 +14,34 @@ const LoginScreen = () => {
   };
 
   const handleLogin = async () => {
-  if (!form.email || !form.password) {
-    return Alert.alert("Error", "Por favor completa todos los campos");
-  }
-
-  try {
-    const data = await loginUser(form);
-
-    if (!data.token) {
-      throw new Error(data.message || "Error en el inicio de sesión");
+    if (!form.email || !form.password) {
+      return Alert.alert("Error", "Por favor completa todos los campos");
     }
 
-    // Guardar token y nombre de usuario
-    await AsyncStorage.setItem("token", data.token);
-    await AsyncStorage.setItem("username", data.username);
+    try {
+      const data = await loginUser(form);
 
-    Alert.alert("Bienvenido", `Hola ${data.username}!`);
+      if (!data.token) {
+        throw new Error(data.message || "Error en el inicio de sesión");
+      }
 
-    // Redirigir al Home (reemplaza la pantalla actual)
-    navigation.replace("MainTabs");
+      // save all user data to context
+      await login({
+        token: data.token,
+        username: data.username,
+        email: data.email,
+      });
 
-  } catch (error) {
-    console.error("Error en login:", error);
-    Alert.alert("Error", error.message || "Credenciales inválidas");
-  }
-};
+      Alert.alert("Bienvenido", `Hola ${data.username}!`);
+
+      // navigate to main app
+      navigation.replace("MainTabs");
+
+    } catch (error) {
+      console.error("Error en login:", error);
+      Alert.alert("Error", error.message || "Credenciales inválidas");
+    }
+  };
 
 
   return (

@@ -31,3 +31,34 @@ export const loginUser = async (data) => {
     throw error;
   }
 };
+
+// fetch user profile by username
+export const getUserProfile = async (username) => {
+  try {
+    const res = await fetch(`${API_URL}api/users/profile/${username}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const json = await res.json();
+    return json;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    throw error;
+  }
+};
+
+// update user profile
+export const updateUserProfile = async (userId, data) => {
+  try {
+    const res = await fetch(`${API_URL}api/users/profile/${userId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    return json;
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw error;
+  }
+};

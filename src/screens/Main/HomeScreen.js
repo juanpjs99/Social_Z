@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Header from "../../components/Header";
 
 export default function HomeScreen({ navigation }) {
   const [tweets, setTweets] = useState([]);
@@ -21,13 +22,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Encabezado */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Inicio</Text>
-        <TouchableOpacity onPress={() => alert("Crear Tweet pronto!")}>
-          <Ionicons name="create-outline" size={26} color="#1DA1F2" />
-        </TouchableOpacity>
-      </View>
+      <Header title="Home" />
 
       {/* Botones para navegar */}
       <View style={styles.navButtons}>
@@ -72,18 +67,12 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", padding: 15 },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  title: { fontSize: 22, fontWeight: "700", color: "#1DA1F2" },
+  container: { flex: 1, backgroundColor: "#fff" },
   navButtons: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom: 15,
+    marginVertical: 15,
+    paddingHorizontal: 15,
   },
   navButton: { alignItems: "center" },
   navText: { marginTop: 3, color: "#1DA1F2", fontSize: 13 },
@@ -92,6 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     marginBottom: 10,
+    marginHorizontal: 15,
   },
   user: { fontWeight: "600", marginBottom: 4 },
   tweet: { fontSize: 15 },

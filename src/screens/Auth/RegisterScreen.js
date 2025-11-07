@@ -24,11 +24,14 @@ export default function RegisterScreen({ navigation }) {
     try {
       const res = await registerUser({ fullName, username, email, password });
 
-      if (res._id) {
+      if (res && (res._id || (res.data && res.data._id))) {
         Alert.alert("Éxito", "Usuario registrado correctamente");
         navigation.navigate("Login");
       } else {
-        Alert.alert("Error", res.message || "No se pudo registrar el usuario");
+        const errorMessage =
+          (res && (res.message || (res.data && res.data.message))) ||
+          "No se pudo registrar el usuario";
+        Alert.alert("Error", errorMessage);
       }
     } catch (error) {
       console.error("Error en register:", error);
