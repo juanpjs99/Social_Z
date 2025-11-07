@@ -13,3 +13,5 @@ router.get("/profile/:username", getUserProfile);
 router.put("/profile/:userId", updateUserProfile);
 
 export default router;
+
+
