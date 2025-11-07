@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { AuthContext } from "../../context/AuthContext";
 import { getUserProfile } from "../../api/api";
@@ -18,7 +19,8 @@ export default function ProfileScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
 
   // load profile data when screen opens
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
+    setLoading(true);
     try {
       if (user && user.username) {
         const data = await getUserProfile(user.username);
@@ -29,12 +31,14 @@ export default function ProfileScreen({ navigation }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
-  useEffect(() => {
-    loadProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // reload profile every time screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadProfile();
+    }, [loadProfile])
+  );
 
   const handleLogout = async () => {
     await logout();
