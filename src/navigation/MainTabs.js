@@ -36,7 +36,7 @@ export default function MainTabs({ setUser }) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerTitleAlign: "center",
+        headerShown: false, // Ocultar todos los headers del Tab Navigator
         tabBarActiveTintColor: "#1DA1F2",
         tabBarInactiveTintColor: "gray",
         tabBarStyle: { height: 60, paddingBottom: 5 },

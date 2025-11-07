@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, Button, StyleSheet } from "react-native";
+import Header from "../../components/Header";
 
 export default function FollowersScreen() {
   const [followers, setFollowers] = useState([
@@ -17,6 +18,7 @@ export default function FollowersScreen() {
 
   return (
     <View style={styles.container}>
+      <Header title="Followers" />
       <FlatList
         data={followers}
         keyExtractor={(item) => item.id}
@@ -39,12 +41,13 @@ export default function FollowersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 15, backgroundColor: "#fff" },
+  container: { flex: 1, backgroundColor: "#fff" },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 15,
+    marginHorizontal: 15,
   },
   name: { fontWeight: "700", fontSize: 16 },
   username: { color: "gray" },
