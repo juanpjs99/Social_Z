@@ -44,9 +44,11 @@ export const obtenerTweets = async () => {
   }
 };
 
-export const eliminarTweet = async (tweetId) => {
+export const eliminarTweet = async (tweetId, userId) => {
   try {
-    const res = await axios.delete(`${API_URL}/tweets/${tweetId}`);
+    const res = await axios.delete(`${API_URL}/tweets/${tweetId}`, {
+      data: { userId }
+    });
     return res.data;
   } catch (error) {
     console.error("Error en eliminarTweet:", error.response?.data || error.message);

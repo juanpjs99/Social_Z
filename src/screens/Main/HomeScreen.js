@@ -30,7 +30,7 @@ export default function HomeScreen({ navigation }) {
   const [nuevoTweet, setNuevoTweet] = useState("");
   const [image, setImage] = useState(null); // { uri, base64, type }
 
-  // userId real obtenido desde el storage (guardado al iniciar sesión)
+  // Real userId obtained from storage (saved when logging in)
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
@@ -83,19 +83,19 @@ export default function HomeScreen({ navigation }) {
 
   const pickImage = async () => {
     try {
-      // En Android necesitaremos pedir permiso de lectura de medios en tiempo de ejecución
+      // On Android we need to request media read permission at runtime
       if (Platform.OS === 'android') {
         try {
           const api33 = parseInt(Platform.Version, 10) >= 33;
           const permission = api33 ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
           const granted = await PermissionsAndroid.request(permission);
           if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-            Alert.alert('Permiso denegado', 'Necesitamos permiso para acceder a tus imágenes');
+            Alert.alert('Permission denied', 'We need permission to access your images');
             return;
           }
         } catch (permErr) {
-          console.error('Error pidiendo permiso:', permErr);
-          // continuar e intentar abrir el selector
+          console.error('Error requesting permission:', permErr);
+          // Continue and try to open the picker
         }
       }
 
@@ -130,11 +130,16 @@ export default function HomeScreen({ navigation }) {
 
   const eliminar = async (id) => {
     try {
-      await eliminarTweet(id);
+      if (!userId) {
+        Alert.alert('Error', 'Debes iniciar sesión');
+        return;
+      }
+      await eliminarTweet(id, userId);
       cargarTweets();
     } catch (error) {
       console.error('Error al eliminar tweet:', error.response?.data || error.message);
-      Alert.alert('Error', 'No se pudo eliminar el tweet');
+      const errorMsg = error.response?.data?.message || 'No se pudo eliminar el tweet';
+      Alert.alert('Error', errorMsg);
     }
   };
 
@@ -142,15 +147,15 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       {/* Encabezado */}
       <View style={styles.header}>
-        <Text style={styles.title}>Inicio</Text>
+        <Text style={styles.title}>Home</Text>
 
 
         <TouchableOpacity style={styles.newButton} onPress={() => setModalVisible(true)}>
-          <Text style={styles.newButtonText}>Nuevo Tweet</Text>
+          <Text style={styles.newButtonText}>New Tweet</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Botones para navegar */}
+      {/* Navigation buttons */}
       <View style={styles.navButtons}>
         <TouchableOpacity
           style={styles.navButton}
@@ -177,7 +182,7 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Feed */}
+      {/* Tweet feed */}
       <FlatList
         data={tweets}
 
@@ -187,14 +192,17 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.tweetCard}>
             <View style={styles.tweetHeaderRow}>
               <Text style={styles.user}>@{item.author?.username || "user"}</Text>
-              <TouchableOpacity style={styles.deleteButton} onPress={() => confirmarEliminar(item._id || item.id)}>
-                <Text style={styles.deleteButtonText}>Eliminar</Text>
-              </TouchableOpacity>
+              {/* Only show delete button if user is the author */}
+              {item.author?._id === userId && (
+                <TouchableOpacity style={styles.deleteButton} onPress={() => confirmarEliminar(item._id || item.id)}>
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             <Text style={styles.tweet}>{item.text || item.content}</Text>
             
-            {/* Mostrar imagen si existe */}
+            {/* Show image if it exists */}
             {item.image && (
               <Image 
                 source={{ uri: item.image }} 
@@ -206,7 +214,7 @@ export default function HomeScreen({ navigation }) {
         )}
       />
 
-      {/* Modal para crear tweet */}
+      {/* Modal to create tweet */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
@@ -260,7 +268,7 @@ const styles = StyleSheet.create({
   user: { fontWeight: "600", marginBottom: 4 },
   tweet: { fontSize: 15 },
 
-  // Modal styles
+  // Modal
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",

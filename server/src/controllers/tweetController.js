@@ -1,20 +1,20 @@
 import Tweet from "../models/tweets.js";
 import User from "../models/User.js";
 
-// 🟢 Crear tweet (acepta multipart/form-data con campo 'image' o JSON con image)
+// Create tweet (accepts multipart/form-data with 'image' field or JSON with image)
 export const createTweet = async (req, res) => {
   try {
     console.log('createTweet - body:', req.body);
     console.log('createTweet - file:', req.file ? { filename: req.file.filename, mimetype: req.file.mimetype, size: req.file.size } : null);
     const { text, userId } = req.body;
 
-    // Si multer ha procesado un archivo, estará en req.file
+    // If multer processed a file, it will be in req.file
     let image = "";
     if (req.file) {
-      // Guardamos la ruta relativa para que el cliente la normalice (ej: /uploads/xxx.jpg)
+      // Save relative path so client can normalize it (e.g., /uploads/xxx.jpg)
       image = `/uploads/${req.file.filename}`;
     } else if (req.body.image) {
-      image = req.body.image; // puede ser data:... o URL completa
+      image = req.body.image; // Can be data:... or full URL
     }
 
     if (!text && !image) {
@@ -39,7 +39,7 @@ export const createTweet = async (req, res) => {
   }
 };
 
-// 🟡 Obtener todos los tweets
+// Get all tweets
 export const getTweets = async (req, res) => {
   try {
     const tweets = await Tweet.find()
@@ -53,16 +53,22 @@ export const getTweets = async (req, res) => {
   }
 };
 
-// 🔴 Eliminar tweet
+// Delete tweet
 export const deleteTweet = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('deleteTweet - id:', id);
+    const { userId } = req.body;
+    console.log('deleteTweet - id:', id, 'userId:', userId);
 
     const tweet = await Tweet.findById(id);
-    if (!tweet) return res.status(404).json({ message: "Tweet no encontrado" });
+    if (!tweet) return res.status(404).json({ message: "Tweet not found" });
 
-    // Si el tweet tiene imagen guardada en uploads, intentar borrar el fichero (opcional)
+    // Validate that the user is the author of the tweet
+    if (tweet.author.toString() !== userId) {
+      return res.status(403).json({ message: "You don't have permission to delete this tweet" });
+    }
+
+    // If tweet has an image stored in uploads, try to delete the file (optional)
     try {
       if (tweet.image && typeof tweet.image === 'string' && tweet.image.startsWith('/uploads')) {
         const path = `./uploads/${tweet.image.split('/').pop()}`;
@@ -71,12 +77,12 @@ export const deleteTweet = async (req, res) => {
         }).catch(() => {});
       }
     } catch (e) {
-      // no bloquear la eliminación por errores de fichero
-      console.error('No se pudo borrar el fichero de imagen:', e);
+      // Don't block deletion if file removal fails
+      console.error('Could not delete image file:', e);
     }
 
     await tweet.deleteOne();
-    res.json({ message: "Tweet eliminado correctamente" });
+    res.json({ message: "Tweet deleted successfully" });
   } catch (error) {
     console.error("Error en deleteTweet:", error);
     res.status(500).json({ message: "Error del servidor" });
