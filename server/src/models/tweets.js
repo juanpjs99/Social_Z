@@ -1,5 +1,21 @@
 import mongoose from "mongoose";
 
+const commentSchema = new mongoose.Schema(
+  {
+    text: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
 const tweetSchema = new mongoose.Schema(
   {
     text: {
@@ -8,7 +24,7 @@ const tweetSchema = new mongoose.Schema(
       trim: true,
     },
     image: {
-      type: String, // base64 o URL
+      type: String,
       default: "",
     },
     author: {
@@ -16,6 +32,13 @@ const tweetSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    comments: [commentSchema],
   },
   { timestamps: true }
 );

@@ -28,19 +28,19 @@ export default function MainTabs({ setUser }) {
         tabBarStyle: { height: 60, paddingBottom: 5 },
         tabBarIcon: ({ color, size }) => {
           let icon = "ellipse-outline";
-          if (route.name === "Inicio") icon = "home-outline";
-          if (route.name === "Seguidores") icon = "people-outline";
-          if (route.name === "Seguidos") icon = "person-add-outline";
-          if (route.name === "Perfil") icon = "person-circle-outline";
+          if (route.name === "Home") icon = "home-outline";
+          if (route.name === "Followers") icon = "people-outline";
+          if (route.name === "Following") icon = "person-add-outline";
+          if (route.name === "Profile") icon = "person-circle-outline";
           return <Ionicons name={icon} size={24} color={color} />;
         },
       })}
     >
-      <Tab.Screen name="Inicio" component={HomeScreen} />
-      <Tab.Screen name="Seguidores" component={FollowersScreen} />
-      <Tab.Screen name="Seguidos" component={FollowingScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Followers" component={FollowersScreen} />
+      <Tab.Screen name="Following" component={FollowingScreen} />
       <Tab.Screen
-        name="Perfil"
+        name="Profile"
         options={{
           headerRight: () => (
             <TouchableOpacity onPress={handleLogout} style={{ marginRight: 10 }}>

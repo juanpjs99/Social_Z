@@ -8,7 +8,7 @@ export default function ProfileScreen({ setUser }) {
   useEffect(() => {
     const loadData = async () => {
       const savedUsername = await AsyncStorage.getItem("username");
-      setUsername(savedUsername || "Usuario");
+      setUsername(savedUsername || "User");
     };
     loadData();
   }, []);
@@ -22,8 +22,8 @@ export default function ProfileScreen({ setUser }) {
   return (
     <View style={styles.container}>
       <Text style={styles.name}>@{username}</Text>
-      <Text style={styles.stats}>Seguidores: 12 | Seguidos: 8</Text>
-      <Button title="Cerrar sesión" onPress={handleLogout} color="#1DA1F2" />
+      <Text style={styles.stats}>Followers: 12 | Following: 8</Text>
+      <Button title="Log out" onPress={handleLogout} color="#1DA1F2" />
     </View>
   );
 }

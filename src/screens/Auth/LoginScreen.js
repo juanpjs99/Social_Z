@@ -14,14 +14,14 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
   if (!form.email || !form.password) {
-    return Alert.alert("Error", "Por favor completa todos los campos");
+    return Alert.alert("Error", "Please fill in all fields");
   }
 
   try {
     const data = await loginUser(form);
 
     if (!data.token) {
-      throw new Error(data.message || "Error en el inicio de sesión");
+      throw new Error(data.message || "Login error");
     }
 
     // Guardar token y nombre de usuario
@@ -32,25 +32,25 @@ const LoginScreen = () => {
       await AsyncStorage.setItem("userId", data.id);
     }
 
-    Alert.alert("Bienvenido", `Hola ${data.username}!`);
+  Alert.alert("Welcome", `Hi ${data.username}!`);
 
     // Redirigir al Home (reemplaza la pantalla actual)
     navigation.replace("MainTabs");
 
   } catch (error) {
     console.error("Error en login:", error);
-    Alert.alert("Error", error.message || "Credenciales inválidas");
+    Alert.alert("Error", error.message || "Invalid credentials");
   }
 };
 
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar Sesión</Text>
+  <Text style={styles.title}>Sign In</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Correo electrónico"
+  placeholder="Email"
         placeholderTextColor="#999"
         keyboardType="email-address"
         autoCapitalize="none"
@@ -60,7 +60,7 @@ const LoginScreen = () => {
 
       <TextInput
         style={styles.input}
-        placeholder="Contraseña"
+  placeholder="Password"
         placeholderTextColor="#999"
         secureTextEntry
         value={form.password}
@@ -68,11 +68,11 @@ const LoginScreen = () => {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Ingresar</Text>
+  <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text style={styles.link}>¿No tienes una cuenta? Regístrate</Text>
+  <Text style={styles.link}>Don't have an account? Register</Text>
       </TouchableOpacity>
     </View>
   );

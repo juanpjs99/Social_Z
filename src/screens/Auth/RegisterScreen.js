@@ -17,7 +17,7 @@ export default function RegisterScreen({ navigation }) {
 
   const handleRegister = async () => {
     if (!fullName || !username || !email || !password) {
-      Alert.alert("Error", "Por favor completa todos los campos");
+      Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
@@ -25,24 +25,24 @@ export default function RegisterScreen({ navigation }) {
       const res = await registerUser({ fullName, username, email, password });
 
       if (res._id) {
-        Alert.alert("Éxito", "Usuario registrado correctamente");
+        Alert.alert("Success", "User registered successfully");
         navigation.navigate("Login");
       } else {
-        Alert.alert("Error", res.message || "No se pudo registrar el usuario");
+        Alert.alert("Error", res.message || "Could not register user");
       }
     } catch (error) {
       console.error("Error en register:", error);
-      Alert.alert("Error", "Ocurrió un problema al registrar el usuario");
+      Alert.alert("Error", "There was a problem registering the user");
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Crear Cuenta</Text>
+  <Text style={styles.title}>Create Account</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Nombre completo"
+  placeholder="Full name"
         placeholderTextColor="#aaa"
         value={fullName}
         onChangeText={setFullName}
@@ -50,7 +50,7 @@ export default function RegisterScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Nombre de usuario"
+  placeholder="Username"
         placeholderTextColor="#aaa"
         value={username}
         onChangeText={setUsername}
@@ -58,7 +58,7 @@ export default function RegisterScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Correo electrónico"
+  placeholder="Email"
         placeholderTextColor="#aaa"
         keyboardType="email-address"
         value={email}
@@ -67,7 +67,7 @@ export default function RegisterScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Contraseña"
+  placeholder="Password"
         placeholderTextColor="#aaa"
         secureTextEntry
         value={password}
@@ -75,11 +75,11 @@ export default function RegisterScreen({ navigation }) {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Registrarse</Text>
+  <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={styles.linkText}>¿Ya tienes cuenta? Inicia sesión</Text>
+  <Text style={styles.linkText}>Already have an account? Sign in</Text>
       </TouchableOpacity>
     </View>
   );
