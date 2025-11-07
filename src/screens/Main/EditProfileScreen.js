@@ -10,7 +10,7 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import { launchImageLibrary } from "react-native-image-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { AuthContext } from "../../context/AuthContext";
 import { updateUserProfile } from "../../api/api";
@@ -27,28 +27,26 @@ export default function EditProfileScreen({ navigation, route }) {
   // pick image from gallery
   const pickImage = async () => {
     try {
-      // request permissions
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
-      if (status !== "granted") {
-        Alert.alert("Permission needed", "We need gallery access to change your profile picture");
-        return;
-      }
+      const options = {
+        mediaType: "photo",
+        includeBase64: true,
+        maxWidth: 800,
+        maxHeight: 800,
+        quality: 0.5,
+      };
 
-      // open image picker
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1], // square
-        quality: 0.5, // compress to save space
-        base64: true, // get base64 string
+      launchImageLibrary(options, (response) => {
+        if (response.didCancel) {
+          console.log("User cancelled image picker");
+        } else if (response.errorCode) {
+          console.log("ImagePicker Error: ", response.errorMessage);
+          Alert.alert("Error", "Failed to pick image");
+        } else if (response.assets && response.assets[0].base64) {
+          // save as base64 with prefix
+          const base64Image = `data:image/jpeg;base64,${response.assets[0].base64}`;
+          setProfilePicture(base64Image);
+        }
       });
-
-      if (!result.canceled && result.assets[0].base64) {
-        // save as base64 with prefix
-        const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
-        setProfilePicture(base64Image);
-      }
     } catch (error) {
       console.error("Error picking image:", error);
       Alert.alert("Error", "Failed to pick image");
