@@ -1,42 +1,59 @@
-import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, TextInput, Button, FlatList, Text, Alert } from "react-native";
+import { crearTweet, obtenerTweets } from "../../api/api"; // Ajusta ruta
 
-export default function CreateTweetScreen({ navigation }) {
-  const [content, setContent] = useState("");
+export default function CrearTweetScreen({ userId }) {
+  const [nuevoTweet, setNuevoTweet] = useState("");
+  const [tweets, setTweets] = useState([]);
 
-  const handlePost = () => {
-    if (content.trim() === "") {
+  useEffect(() => {
+    cargarTweets();
+  }, []);
+
+  const cargarTweets = async () => {
+    try {
+      const data = await obtenerTweets();
+      setTweets(data);
+    } catch (error) {
+      Alert.alert("Error", "No se pudo cargar los tweets");
+    }
+  };
+
+  const publicarTweet = async () => {
+    if (nuevoTweet.trim() === "") {
       Alert.alert("Error", "El tweet no puede estar vacío");
       return;
     }
-    console.log("Nuevo tweet:", content);
-    Alert.alert("Publicado", "Tu tweet fue publicado correctamente ✅");
-    navigation.goBack();
+
+    try {
+      await crearTweet(userId, nuevoTweet, "");
+      setNuevoTweet("");
+      cargarTweets();
+    } catch (error) {
+      Alert.alert("Error", "No se pudo publicar el tweet");
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ padding: 20 }}>
       <TextInput
         placeholder="¿Qué está pasando?"
-        multiline
-        value={content}
-        onChangeText={setContent}
-        style={styles.textInput}
+        value={nuevoTweet}
+        onChangeText={setNuevoTweet}
+        style={{ borderBottomWidth: 1, marginBottom: 10 }}
       />
-      <Button title="Publicar" onPress={handlePost} color="#1DA1F2" />
+      <Button title="Publicar" onPress={publicarTweet} />
+
+      <FlatList
+        data={tweets}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <View style={{ marginVertical: 10 }}>
+            <Text style={{ fontWeight: "bold" }}>{item.author.username}</Text>
+            <Text>{item.text}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 15 },
-  textInput: {
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    minHeight: 100,
-    marginBottom: 20,
-    fontSize: 16,
-  },
-});

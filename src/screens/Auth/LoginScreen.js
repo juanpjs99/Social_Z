@@ -27,6 +27,10 @@ const LoginScreen = () => {
     // Guardar token y nombre de usuario
     await AsyncStorage.setItem("token", data.token);
     await AsyncStorage.setItem("username", data.username);
+    // Guardar userId (para publicar tweets)
+    if (data.id) {
+      await AsyncStorage.setItem("userId", data.id);
+    }
 
     Alert.alert("Bienvenido", `Hola ${data.username}!`);
 
