@@ -1,5 +1,5 @@
 import express from "express";
-import { createTweet, getTweets, deleteTweet } from "../controllers/tweetController.js";
+import { createTweet, getTweets, deleteTweet, toggleLike, addComment, deleteComment } from "../controllers/tweetController.js";
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -26,5 +26,11 @@ const router = express.Router();
 router.post("/", upload.single('image'), createTweet);   // crear tweet
 router.get("/", getTweets);      // obtener tweets
 router.delete("/:id", deleteTweet); // borrar tweet
+
+// Like
+router.post('/:id/like', toggleLike);
+// Comments
+router.post('/:id/comments', addComment);
+router.delete('/:tweetId/comments/:commentId', deleteComment);
 
 export default router;

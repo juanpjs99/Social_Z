@@ -13,8 +13,9 @@ connectDB();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Aumentar límite para evitar PayloadTooLargeError cuando se envían strings grandes
+app.use(express.json({ limit: '15mb' }));
+app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
 // Configuración para ESM: definir __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -36,5 +37,5 @@ app.use("/uploads", express.static(uploadsPath));
 app.use("/api/users", userRoutes);
 app.use("/api/tweets", tweetRoutes);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

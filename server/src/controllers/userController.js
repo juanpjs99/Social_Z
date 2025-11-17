@@ -156,3 +156,53 @@ export const updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// 🟢 Seguir usuario
+export const followUser = async (req, res) => {
+  try {
+    const { id } = req.params; // usuario a seguir
+    const { userId } = req.body; // quien sigue
+    if (!userId) return res.status(400).json({ message: 'userId requerido' });
+    if (id === userId) return res.status(400).json({ message: 'No puedes seguirte a ti mismo' });
+
+    const follower = await User.findById(userId);
+    const target = await User.findById(id);
+    if (!follower || !target) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+    const already = follower.following.some(u => u.toString() === id.toString());
+    if (already) {
+      return res.status(200).json({ message: 'Ya sigues a este usuario', already: true });
+    }
+    follower.following.push(id);
+    target.followers.push(userId);
+    await follower.save();
+    await target.save();
+    res.json({ message: 'Usuario seguido', followed: true, targetId: id });
+  } catch (error) {
+    console.error('Error en followUser:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// 🟠 Dejar de seguir usuario (opcional por si se necesita luego)
+export const unfollowUser = async (req, res) => {
+  try {
+    const { id } = req.params; // usuario objetivo
+    const { userId } = req.body; // quien deja de seguir
+    if (!userId) return res.status(400).json({ message: 'userId requerido' });
+    if (id === userId) return res.status(400).json({ message: 'Operación inválida' });
+
+    const follower = await User.findById(userId);
+    const target = await User.findById(id);
+    if (!follower || !target) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+    follower.following = follower.following.filter(u => u.toString() !== id.toString());
+    target.followers = target.followers.filter(u => u.toString() !== userId.toString());
+    await follower.save();
+    await target.save();
+    res.json({ message: 'Usuario dejado de seguir', unfollowed: true, targetId: id });
+  } catch (error) {
+    console.error('Error en unfollowUser:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};

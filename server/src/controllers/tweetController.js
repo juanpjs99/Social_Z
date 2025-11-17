@@ -43,13 +43,77 @@ export const createTweet = async (req, res) => {
 export const getTweets = async (req, res) => {
   try {
     const tweets = await Tweet.find()
-      .populate("author", "username email")
+      .populate("author", "username email fullName followers")
+      .populate("likes", "username")
+      .populate("comments.author", "username email")
       .sort({ createdAt: -1 });
 
     res.json(tweets);
   } catch (error) {
     console.error("Error en getTweets:", error);
     res.status(500).json({ message: "Error del servidor" });
+  }
+};
+
+// Toggle like
+export const toggleLike = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    if (!userId) return res.status(400).json({ message: 'userId es requerido' });
+
+    const tweet = await Tweet.findById(id);
+    if (!tweet) return res.status(404).json({ message: 'Tweet no encontrado' });
+
+    const already = tweet.likes.some(u => u.toString() === userId.toString());
+    if (already) {
+      tweet.likes = tweet.likes.filter(u => u.toString() !== userId.toString());
+    } else {
+      tweet.likes.push(userId);
+    }
+    await tweet.save();
+    await tweet.populate("likes", "username");
+    res.json({ message: already ? 'Like removido' : 'Tweet likeado', isLiked: !already, likes: tweet.likes.length, tweet });
+  } catch (error) {
+    console.error('Error en toggleLike:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// Add comment
+export const addComment = async (req, res) => {
+  try {
+    const { id } = req.params; // tweet id
+    const { userId, text } = req.body;
+    if (!userId) return res.status(400).json({ message: 'userId es requerido' });
+    if (!text || !text.trim()) return res.status(400).json({ message: 'El comentario no puede estar vacío' });
+
+    const tweet = await Tweet.findById(id);
+    if (!tweet) return res.status(404).json({ message: 'Tweet no encontrado' });
+
+    tweet.comments.push({ text, author: userId });
+    await tweet.save();
+    await tweet.populate('comments.author', 'username email');
+    res.status(201).json({ message: 'Comentario agregado', tweet });
+  } catch (error) {
+    console.error('Error en addComment:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// Delete comment
+export const deleteComment = async (req, res) => {
+  try {
+    const { tweetId, commentId } = req.params;
+    const tweet = await Tweet.findById(tweetId);
+    if (!tweet) return res.status(404).json({ message: 'Tweet no encontrado' });
+    tweet.comments = tweet.comments.filter(c => c._id.toString() !== commentId);
+    await tweet.save();
+    res.json({ message: 'Comentario eliminado', tweet });
+  } catch (error) {
+    console.error('Error en deleteComment:', error);
+    res.status(500).json({ message: 'Error del servidor' });
   }
 };
 

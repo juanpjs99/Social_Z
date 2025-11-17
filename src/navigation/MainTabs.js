@@ -5,6 +5,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 // Import screens (ajustado a tu estructura)
 import HomeScreen from "../screens/Main/HomeScreen";
+import CreateTweetScreen from "../screens/Main/CreateTweetScreen";
+import CommentsScreen from "../screens/Main/CommentsScreen";
 import FollowersScreen from "../screens/Main/FollowersScreen";
 import FollowingScreen from "../screens/Main/FollowingsScreen";
 import ProfileScreen from "../screens/Main/ProfileScreen";
@@ -41,16 +43,24 @@ export default function MainTabs({ setUser }) {
         tabBarInactiveTintColor: "gray",
         tabBarStyle: { height: 60, paddingBottom: 5 },
         tabBarIcon: ({ color, size }) => {
-          let icon = "ellipse-outline";
-          if (route.name === "Inicio") icon = "home-outline";
-          if (route.name === "Seguidores") icon = "people-outline";
-          if (route.name === "Seguidos") icon = "person-add-outline";
-          if (route.name === "Perfil") icon = "person-circle-outline";
+          let icon = 'ellipse-outline';
+          if (route.name === 'Inicio') icon = 'home-outline';
+          if (route.name === 'Seguidores') icon = 'people-outline';
+          if (route.name === 'Seguidos') icon = 'person-add-outline';
+          if (route.name === 'Perfil') icon = 'person-circle-outline';
           return <Ionicons name={icon} size={24} color={color} />;
         },
       })}
     >
-      <Tab.Screen name="Inicio" component={HomeScreen} />
+      <Tab.Screen name="Inicio">
+        {() => (
+          <Stack.Navigator screenOptions={{ headerShown:false }}>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="CreateTweet" component={CreateTweetScreen} />
+            <Stack.Screen name="Comments" component={CommentsScreen} />
+          </Stack.Navigator>
+        )}
+      </Tab.Screen>
       <Tab.Screen name="Seguidores" component={FollowersScreen} />
       <Tab.Screen name="Seguidos" component={FollowingScreen} />
       <Tab.Screen

@@ -8,28 +8,22 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
-  Modal,
-  Button,
   Image,
-
-
-  Alert,
-  Platform,
-  PermissionsAndroid,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Header from "../../components/Header";
 
 
-import { crearTweet, obtenerTweets, eliminarTweet } from "../../api/api";
-import { launchImageLibrary } from 'react-native-image-picker';
+import { obtenerTweets, eliminarTweet, likeTweet, followUser } from "../../api/api";
+import { showMessage } from '../../utils/notify';
+import { formatTweet } from '../../utils/tweetFormat';
 
 export default function HomeScreen({ navigation }) {
+  // Base del servidor para normalizar rutas relativas de imágenes (/uploads/...)
+  const SERVER_BASE = 'http://10.0.2.2:5000';
   const [tweets, setTweets] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [nuevoTweet, setNuevoTweet] = useState("");
-  const [image, setImage] = useState(null); // { uri, base64, type }
+  const [selectedTweet, setSelectedTweet] = useState(null);
+  const [likesLoading, setLikesLoading] = useState({});
 
   // Real userId obtained from storage (saved when logging in)
   const [userId, setUserId] = useState(null);
@@ -37,10 +31,19 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const load = async () => {
       try {
-        const id = await AsyncStorage.getItem('userId');
+        let id = await AsyncStorage.getItem('userId');
+        if (!id) {
+          const storedUser = await AsyncStorage.getItem('user');
+            if (storedUser) {
+              try {
+                const parsed = JSON.parse(storedUser);
+                if (parsed?.id) id = String(parsed.id);
+              } catch (e) { /* ignore parse errors */ }
+            }
+        }
         if (id) setUserId(id);
       } catch (e) {
-        console.error('Error cargando userId:', e);
+        console.error('Error loading userId:', e);
       }
       cargarTweets();
     };
@@ -52,87 +55,33 @@ export default function HomeScreen({ navigation }) {
       const data = await obtenerTweets();
       setTweets(data);
     } catch (error) {
-      Alert.alert("Error", "No se pudieron cargar los tweets");
+  showMessage('Error', 'No se pudieron cargar los tweets', { toast: true });
     }
   };
 
-  const publicarTweet = async () => {
-    if (nuevoTweet.trim() === "") {
-      Alert.alert("Error", "El tweet no puede estar vacío");
-      return;
-    }
-
-    if (!userId) {
-      Alert.alert('Error', 'Debes iniciar sesión para publicar');
-      return;
-    }
-
-    try {
-      console.log("Intentando crear tweet con:", { userId, texto: nuevoTweet });
-      const imagePayload = image && image.base64 ? `data:${image.type};base64,${image.base64}` : "";
-      const resultado = await crearTweet(userId, nuevoTweet, imagePayload);
-      console.log("Tweet creado exitosamente:", resultado);
-      setNuevoTweet("");
-      setImage(null);
-      setModalVisible(false);
-      cargarTweets();
-    } catch (error) {
-      console.error("Error al crear tweet:", error.response?.data || error.message);
-      Alert.alert("Error", `No se pudo publicar el tweet: ${error.response?.data?.message || error.message}`);
-    }
-  };
-
-  const pickImage = async () => {
-    try {
-      // On Android we need to request media read permission at runtime
-      if (Platform.OS === 'android') {
-        try {
-          const api33 = parseInt(Platform.Version, 10) >= 33;
-          const permission = api33 ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
-          const granted = await PermissionsAndroid.request(permission);
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-            Alert.alert('Permission denied', 'We need permission to access your images');
-            return;
-          }
-        } catch (permErr) {
-          console.error('Error requesting permission:', permErr);
-          // Continue and try to open the picker
-        }
-      }
-
-      const res = await launchImageLibrary({ mediaType: 'photo', includeBase64: true, maxWidth: 1200, maxHeight: 1200, quality: 0.8 });
-      if (!res) return;
-      if (res.didCancel) return;
-      if (res.errorCode) {
-        console.error('ImagePicker error', res.errorMessage);
-        Alert.alert('Error', `No se pudo seleccionar la imagen (${res.errorMessage || res.errorCode})`);
-        return;
-      }
-      const asset = res.assets && res.assets[0];
-      if (asset) {
-        setImage({ uri: asset.uri, base64: asset.base64, type: asset.type });
-      }
-    } catch (e) {
-      console.error('Error pickImage', e);
-      Alert.alert('Error', 'No se pudo seleccionar la imagen: ' + (e.message || e));
-    }
-  };
+  // publicarTweet y selección de imagen se movieron a CreateTweetScreen
 
   const confirmarEliminar = (id) => {
-    Alert.alert(
-      'Confirmar',
-      '¿Deseas eliminar este tweet?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Eliminar', style: 'destructive', onPress: () => eliminar(id) },
-      ]
-    );
+    showMessage('Confirmar', 'Abriendo diálogo...');
+    // Mantener diálogo nativo para eliminar (Alert requerido) pero se dispara después de actividad lista
+    setTimeout(() => {
+      import('react-native').then(({ Alert }) => {
+        Alert.alert(
+          'Confirmar',
+          '¿Deseas eliminar este tweet?',
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Eliminar', style: 'destructive', onPress: () => eliminar(id) },
+          ]
+        );
+      });
+    }, 100);
   };
 
   const eliminar = async (id) => {
     try {
       if (!userId) {
-        Alert.alert('Error', 'Debes iniciar sesión');
+  showMessage('Error', 'Debes iniciar sesión');
         return;
       }
       await eliminarTweet(id, userId);
@@ -140,38 +89,58 @@ export default function HomeScreen({ navigation }) {
     } catch (error) {
       console.error('Error al eliminar tweet:', error.response?.data || error.message);
       const errorMsg = error.response?.data?.message || 'No se pudo eliminar el tweet';
-      Alert.alert('Error', errorMsg);
+  showMessage('Error', errorMsg);
     }
+  };
+
+  // --- Likes ---
+  const isLikedByUser = (tweet) => {
+    if (!userId || !tweet?.likes) return false;
+    return tweet.likes.some((l) => (typeof l === 'string' ? l === userId : (l?._id || String(l)) === String(userId)));
+  };
+
+  const onToggleLike = async (tweetId) => {
+    if (!userId) {
+  showMessage('Login required', 'You must be logged in to like');
+      return;
+    }
+    setLikesLoading((prev) => ({ ...prev, [tweetId]: true }));
+    try {
+      await likeTweet(tweetId, userId);
+      await cargarTweets();
+    } catch (e) {
+  showMessage('Error', 'No se pudo procesar el like');
+    } finally {
+      setLikesLoading((prev) => ({ ...prev, [tweetId]: false }));
+    }
+  };
+
+  // --- Comentarios ---
+  const abrirComentarios = (tweet) => {
+    navigation.navigate('Comments', { tweet, refreshHome: cargarTweets });
   };
 
   return (
     <View style={styles.container}>
       <Header title="Home" />
 
-      {/* Navigation buttons */}
-      <View style={styles.navButtons}>
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => navigation.navigate("Seguidores")}
-        >
-          <Ionicons name="people-outline" size={22} color="#1DA1F2" />
-          <Text style={styles.navText}>Seguidores</Text>
+      {/* Menú vertical estilo lista */}
+      <View style={styles.navMenu}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Inicio')}>
+          <Ionicons name="home-outline" size={20} color="#1DA1F2" />
+          <Text style={styles.navItemText}>Inicio</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => navigation.navigate("Seguidos")}
-        >
-          <Ionicons name="person-add-outline" size={22} color="#1DA1F2" />
-          <Text style={styles.navText}>Seguidos</Text>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Seguidores')}>
+          <Ionicons name="people-outline" size={20} color="#1DA1F2" />
+          <Text style={styles.navItemText}>Seguidores</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => navigation.navigate("Perfil")}
-        >
-          <Ionicons name="person-circle-outline" size={22} color="#1DA1F2" />
-          <Text style={styles.navText}>Perfil</Text>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Seguidos')}>
+          <Ionicons name="person-add-outline" size={20} color="#1DA1F2" />
+          <Text style={styles.navItemText}>Seguidos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Perfil')}>
+          <Ionicons name="person-circle-outline" size={20} color="#1DA1F2" />
+          <Text style={styles.navItemText}>Perfil</Text>
         </TouchableOpacity>
       </View>
 
@@ -181,80 +150,86 @@ export default function HomeScreen({ navigation }) {
 
 
         keyExtractor={(item) => item._id || item.id} // Maneja _id de mongo o id falso
-        renderItem={({ item }) => (
-          <View style={styles.tweetCard}>
-            <View style={styles.tweetHeaderRow}>
-              <Text style={styles.user}>@{item.author?.username || "user"}</Text>
-              {/* Only show delete button if user is the author */}
+        renderItem={({ item }) => {
+          return (
+            <View style={styles.tweetCard}>
               {item.author?._id === userId && (
-                <TouchableOpacity style={styles.deleteButton} onPress={() => confirmarEliminar(item._id || item.id)}>
-                  <Text style={styles.deleteButtonText}>Delete</Text>
+                <TouchableOpacity style={styles.deleteButtonTop} onPress={() => confirmarEliminar(item._id || item.id)}>
+                  <Text style={styles.deleteButtonText}>Eliminar</Text>
                 </TouchableOpacity>
               )}
+              {(() => {
+                const { header, body } = formatTweet(item.author, item.text || item.content, item.createdAt || item.timestamp);
+                return (
+                  <View>
+                    <View style={styles.tweetHeaderRow}>
+                      <Text style={styles.tweetHeaderText}>{header}</Text>
+                    </View>
+                    {item.author?._id !== userId && !item.author?.followers?.some(f => f.toString() === userId) && (
+                      <TouchableOpacity style={styles.followBtn} onPress={async () => {
+                        try {
+                          await followUser(item.author._id, userId);
+                          showMessage('Seguido', 'Ahora sigues a este usuario', { toast: true });
+                          cargarTweets();
+                        } catch (e) {
+                          showMessage('Error', e.response?.data?.message || e.message || 'No se pudo seguir');
+                        }
+                      }}>
+                        <Text style={styles.followBtnText}>Seguir</Text>
+                      </TouchableOpacity>
+                    )}
+                    <Text style={styles.tweetBody}>{body}</Text>
+                  </View>
+                );
+              })()}
+              {item.image ? (
+                <Image
+                  source={{ uri: item.image }}
+                  style={styles.tweetImage}
+                  resizeMode="cover"
+                />
+              ) : null}
+              <View style={styles.statsRow}>
+                <Text style={styles.statText}>❤️ {item?.likes?.length || 0}</Text>
+                <Text style={styles.statText}>💬 {item?.comments?.length || 0}</Text>
+              </View>
+              <View style={styles.actionsRow}>
+                <TouchableOpacity
+                  style={[styles.actionBtn, isLikedByUser(item) && styles.likeActive]}
+                  onPress={() => onToggleLike(item._id || item.id)}
+                  disabled={!!likesLoading[item._id || item.id]}
+                >
+                  <Text style={[styles.actionText, isLikedByUser(item) && styles.actionTextActive]}>
+                    {likesLoading[item._id || item.id] ? '...' : (isLikedByUser(item) ? '👍 Me gusta' : '🤍 Me gusta')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionBtn} onPress={() => abrirComentarios(item)}>
+                  <Text style={styles.actionText}>💬 Comentar</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-
-            <Text style={styles.tweet}>{item.text || item.content}</Text>
-            
-            {/* Show image if it exists */}
-            {item.image && (
-              <Image 
-                source={{ uri: item.image }} 
-                style={styles.tweetImage}
-                resizeMode="cover"
-              />
-            )}
-          </View>
-        )}
+          );
+        }}
       />
 
       {/* Floating action button */}
-      <TouchableOpacity 
-        style={styles.fab} 
-        onPress={() => setModalVisible(true)}
-        activeOpacity={0.8}
-      >
+      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('CreateTweet')} activeOpacity={0.8}>
         <Ionicons name="add" size={28} color="#fff" />
       </TouchableOpacity>
-
-      {/* Modal to create tweet */}
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="¿Qué está pasando?"
-              multiline
-              value={nuevoTweet}
-              onChangeText={setNuevoTweet}
-            />
-            <View style={styles.imageButtonContainer}>
-              <Button title={image ? 'Quitar imagen' : 'Agregar imagen'} onPress={() => image ? setImage(null) : pickImage()} />
-            </View>
-            {image ? (
-              <Image source={{ uri: image.uri }} style={styles.imagePreview} />
-            ) : null}
-            <View style={styles.modalButtons}>
-              <Button title="Cancelar" onPress={() => setModalVisible(false)} />
-              <Button title="Publicar" onPress={publicarTweet} />
-            </View>
-          </View>
-        </View>
-
-      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-  navButtons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 15,
-    paddingHorizontal: 15,
+  navMenu:{
+    flexDirection:'column',
+    paddingHorizontal:15,
+    paddingVertical:10,
+    gap:6,
   },
-  navButton: { alignItems: "center" },
-  navText: { marginTop: 3, color: "#1DA1F2", fontSize: 13 },
+  navItem:{ flexDirection:'row', alignItems:'center', gap:12, paddingVertical:6 },
+  navItemText:{ color:'#1DA1F2', fontSize:14, fontWeight:'600' },
   tweetCard: {
     backgroundColor: "#f8f9fa",
     borderRadius: 10,
@@ -262,8 +237,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginHorizontal: 15,
   },
-  user: { fontWeight: "600", marginBottom: 4 },
-  tweet: { fontSize: 15 },
+  tweetHeaderText:{ fontWeight:'600', fontSize:13, color:'#222' },
+  tweetBody:{ marginTop:8, fontSize:14, color:'#000', lineHeight:20, marginBottom:6 },
 
   // Modal
   modalBackground: {
@@ -290,6 +265,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  modalActionBtn: {
+    flex: 1,
+    marginHorizontal: 4,
+    backgroundColor: '#1DA1F2',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  modalActionText: { color: '#fff', fontWeight: '600' },
+  primaryBtn: { backgroundColor: '#1DA1F2' },
+  secondaryBtn: { backgroundColor: '#555' },
+  cancelBtn: { backgroundColor: '#ff4d4f' },
+  disabledBtn: { backgroundColor: '#999' },
+  loginHint: { marginTop: 10, color: '#ff4d4f', textAlign: 'center', fontSize: 12 },
   fab: {
     position: 'absolute',
     right: 20,
@@ -318,6 +307,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 6,
   },
+  deleteButtonTop: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    backgroundColor: '#ff4d4f',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    zIndex: 10,
+  },
   deleteButtonText: {
     color: '#fff',
     fontSize: 12,
@@ -335,8 +334,48 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 10,
   },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  statText: { color: '#555', fontWeight: '600' },
+  actionsRow: { flexDirection: 'row', gap: 10 },
+  actionBtn: {
+    flex: 1,
+    backgroundColor: '#eef6ff',
+    borderWidth: 1,
+    borderColor: '#1DA1F2',
+    borderRadius: 10,
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  likeActive: {
+    backgroundColor: '#e3f2ff',
+    borderColor: '#FF1493',
+  },
+  actionText: { color: '#1DA1F2', fontWeight: '700' },
+  actionTextActive: { color: '#FF1493' },
   imageButtonContainer: {
     marginBottom: 10,
+  },
+  followBtn: {
+    backgroundColor: '#2563EB',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    alignSelf: 'flex-start',
+    marginBottom: 6,
+  },
+  followBtnText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
   },
 
 
