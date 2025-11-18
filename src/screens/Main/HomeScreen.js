@@ -124,26 +124,6 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <Header title="Home" />
 
-      {/* Menú vertical estilo lista */}
-      <View style={styles.navMenu}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Inicio')}>
-          <Ionicons name="home-outline" size={20} color="#1DA1F2" />
-          <Text style={styles.navItemText}>Inicio</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Seguidores')}>
-          <Ionicons name="people-outline" size={20} color="#1DA1F2" />
-          <Text style={styles.navItemText}>Seguidores</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Seguidos')}>
-          <Ionicons name="person-add-outline" size={20} color="#1DA1F2" />
-          <Text style={styles.navItemText}>Seguidos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Perfil')}>
-          <Ionicons name="person-circle-outline" size={20} color="#1DA1F2" />
-          <Text style={styles.navItemText}>Perfil</Text>
-        </TouchableOpacity>
-      </View>
-
       {/* Tweet feed */}
       <FlatList
         data={tweets}
@@ -236,14 +216,6 @@ export default function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-  navMenu:{
-    flexDirection:'column',
-    paddingHorizontal:15,
-    paddingVertical:10,
-    gap:6,
-  },
-  navItem:{ flexDirection:'row', alignItems:'center', gap:12, paddingVertical:6 },
-  navItemText:{ color:'#1DA1F2', fontSize:14, fontWeight:'600' },
   tweetCard: {
     backgroundColor: "#f8f9fa",
     borderRadius: 10,
