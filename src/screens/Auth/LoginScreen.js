@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { loginUser } from "../../api/api";
+import { showMessage } from '../../utils/notify';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from "../../context/AuthContext";
 
 const LoginScreen = () => {
@@ -15,31 +17,37 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     if (!form.email || !form.password) {
-      return Alert.alert("Error", "Por favor completa todos los campos");
+      return showMessage('Error', 'Por favor completa todos los campos');
     }
 
     try {
-      const data = await loginUser(form);
+  const data = await loginUser(form);
 
       if (!data.token) {
         throw new Error(data.message || "Error en el inicio de sesión");
       }
 
       // save all user data to context
+      // Persist id so other screens (Home) can access it for likes/comments
+      if (data.id) {
+        await AsyncStorage.setItem('userId', String(data.id));
+      }
       await login({
         token: data.token,
+        id: data.id,
         username: data.username,
         email: data.email,
       });
 
-      Alert.alert("Bienvenido", `Hola ${data.username}!`);
+  // Usar mensaje diferido para evitar alerta antes de que la Activity esté lista
+  setTimeout(() => showMessage('Bienvenido', `Hola ${data.username}!`, { toast: true }), 300);
 
       // navigate to main app
       navigation.replace("MainTabs");
 
     } catch (error) {
       console.error("Error en login:", error);
-      Alert.alert("Error", error.message || "Credenciales inválidas");
+  showMessage('Error', error.message || 'Credenciales inválidas');
     }
   };
 
