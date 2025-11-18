@@ -14,7 +14,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Header from "../../components/Header";
 
 
-import { obtenerTweets, eliminarTweet, likeTweet, followUser } from "../../api/api";
+import { obtenerTweets, eliminarTweet, likeTweet, followUser, unfollowUser } from "../../api/api";
 import { showMessage } from '../../utils/notify';
 import { formatTweet } from '../../utils/tweetFormat';
 
@@ -165,18 +165,32 @@ export default function HomeScreen({ navigation }) {
                     <View style={styles.tweetHeaderRow}>
                       <Text style={styles.tweetHeaderText}>{header}</Text>
                     </View>
-                    {item.author?._id !== userId && !item.author?.followers?.some(f => f.toString() === userId) && (
-                      <TouchableOpacity style={styles.followBtn} onPress={async () => {
-                        try {
-                          await followUser(item.author._id, userId);
-                          showMessage('Seguido', 'Ahora sigues a este usuario', { toast: true });
-                          cargarTweets();
-                        } catch (e) {
-                          showMessage('Error', e.response?.data?.message || e.message || 'No se pudo seguir');
-                        }
-                      }}>
-                        <Text style={styles.followBtnText}>Seguir</Text>
-                      </TouchableOpacity>
+                    {item.author?._id !== userId && (
+                      item.author?.followers?.some(f => f.toString() === userId) ? (
+                        <TouchableOpacity style={styles.unfollowBtn} onPress={async () => {
+                          try {
+                            await unfollowUser(item.author._id, userId);
+                            showMessage('Listo', 'Has dejado de seguir a este usuario', { toast: true });
+                            cargarTweets();
+                          } catch (e) {
+                            showMessage('Error', e.response?.data?.message || e.message || 'No se pudo dejar de seguir');
+                          }
+                        }}>
+                          <Text style={styles.unfollowBtnText}>Dejar de seguir</Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity style={styles.followBtn} onPress={async () => {
+                          try {
+                            await followUser(item.author._id, userId);
+                            showMessage('Seguido', 'Ahora sigues a este usuario', { toast: true });
+                            cargarTweets();
+                          } catch (e) {
+                            showMessage('Error', e.response?.data?.message || e.message || 'No se pudo seguir');
+                          }
+                        }}>
+                          <Text style={styles.followBtnText}>Seguir</Text>
+                        </TouchableOpacity>
+                      )
                     )}
                     <Text style={styles.tweetBody}>{body}</Text>
                   </View>
@@ -376,6 +390,21 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 12,
     fontWeight: '600',
+  },
+  unfollowBtn: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ff4d4f',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    alignSelf: 'flex-start',
+    marginBottom: 6,
+  },
+  unfollowBtnText: {
+    color: '#ff4d4f',
+    fontSize: 12,
+    fontWeight: '700',
   },
 
 
