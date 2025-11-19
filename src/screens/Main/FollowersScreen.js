@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { 
   View, 
   Text, 
@@ -7,6 +7,7 @@ import {
   StyleSheet, 
   ActivityIndicator 
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../../context/AuthContext";
 import { getFollowers, followUser, unfollowUser } from "../../api/api";
 import Header from "../../components/Header";
@@ -16,13 +17,8 @@ export default function FollowersScreen() {
   const [followers, setFollowers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // load followers when screen opens
-  useEffect(() => {
-    loadFollowers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadFollowers = async () => {
+  // load followers data from server
+  const loadFollowers = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getFollowers(user.username);
@@ -32,7 +28,14 @@ export default function FollowersScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  // load followers when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadFollowers();
+    }, [loadFollowers])
+  );
 
   // follow or unfollow user
   const handleFollowToggle = async (followerUser) => {

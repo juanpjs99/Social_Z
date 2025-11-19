@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { 
   View, 
   Text, 
@@ -7,6 +7,7 @@ import {
   StyleSheet, 
   ActivityIndicator 
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../../context/AuthContext";
 import { getFollowing, unfollowUser } from "../../api/api";
 import Header from "../../components/Header";
@@ -16,13 +17,8 @@ export default function FollowingScreen() {
   const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // load following list when screen opens
-  useEffect(() => {
-    loadFollowing();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadFollowing = async () => {
+  // load following data from server
+  const loadFollowing = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getFollowing(user.username);
@@ -32,7 +28,14 @@ export default function FollowingScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  // load following list when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadFollowing();
+    }, [loadFollowing])
+  );
 
   // unfollow user
   const handleUnfollow = async (targetUser) => {
