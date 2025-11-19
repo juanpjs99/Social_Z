@@ -110,12 +110,18 @@ export default function ProfileScreen({ navigation }) {
 
         {/* Stats - Followers and Following */}
         <View style={styles.statsRow}>
-          <TouchableOpacity style={styles.stat}>
+          <TouchableOpacity 
+            style={styles.stat}
+            onPress={() => navigation.navigate('Following')}
+          >
             <Text style={styles.statNumber}>{profileData?.followingCount || 0}</Text>
             <Text style={styles.statLabel}>Following</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.stat}>
+          <TouchableOpacity 
+            style={styles.stat}
+            onPress={() => navigation.navigate('Followers')}
+          >
             <Text style={styles.statNumber}>{profileData?.followersCount || 0}</Text>
             <Text style={styles.statLabel}>Followers</Text>
           </TouchableOpacity>

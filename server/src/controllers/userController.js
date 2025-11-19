@@ -206,3 +206,43 @@ export const unfollowUser = async (req, res) => {
     res.status(500).json({ message: 'Error del servidor' });
   }
 };
+
+// get list of followers for a user
+export const getFollowers = async (req, res) => {
+  try {
+    const { username } = req.params;
+    
+    // find user and get followers list
+    const user = await User.findOne({ username })
+      .populate("followers", "username fullName profilePicture");
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ followers: user.followers });
+  } catch (error) {
+    console.error("Error getting followers:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// get list of users that this user is following
+export const getFollowing = async (req, res) => {
+  try {
+    const { username } = req.params;
+    
+    // find user and get following list
+    const user = await User.findOne({ username })
+      .populate("following", "username fullName profilePicture");
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ following: user.following });
+  } catch (error) {
+    console.error("Error getting following:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

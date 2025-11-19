@@ -150,3 +150,25 @@ export const unfollowUser = async (targetUserId, userId) => {
     throw error;
   }
 };
+
+// get followers list for a user
+export const getFollowers = async (username) => {
+  try {
+    const res = await axios.get(`${API_URL}/users/${username}/followers`);
+    return res.data;
+  } catch (error) {
+    console.error('Error getting followers:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// get following list for a user
+export const getFollowing = async (username) => {
+  try {
+    const res = await axios.get(`${API_URL}/users/${username}/following`);
+    return res.data;
+  } catch (error) {
+    console.error('Error getting following:', error.response?.data || error.message);
+    throw error;
+  }
+};

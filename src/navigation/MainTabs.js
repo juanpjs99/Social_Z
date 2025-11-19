@@ -30,6 +30,16 @@ function ProfileStack({ setUser }) {
         component={EditProfileScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="Followers"
+        component={FollowersScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Following"
+        component={FollowingScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
