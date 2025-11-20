@@ -71,7 +71,11 @@ export default function Header({ title, showBackButton = false }) {
       {/* Right side: Logout */}
       <View style={styles.rightSection}>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Ionicons name="log-out-outline" size={24} color="#E0245E" />
+          <Image 
+            source={require('../assets/logout-icon.png')} 
+            style={styles.logoutIcon}
+            resizeMode="contain"
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -84,47 +88,56 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingTop: 40,
-    paddingBottom: 12,
+    paddingTop: 50,
+    paddingBottom: 15,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e1e8ed',
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowRadius: 3,
   },
   leftSection: {
-    flex: 1,
+    width: 50,
     alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   centerSection: {
-    flex: 2,
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   rightSection: {
-    flex: 1,
+    width: 50,
     alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   logoContainer: {
     padding: 5,
   },
   logo: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#14171a',
   },
   username: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#657786',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   logoutButton: {
-    padding: 5,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#FFF5F5',
+  },
+  logoutIcon: {
+    width: 24,
+    height: 24,
   },
 });
