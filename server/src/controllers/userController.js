@@ -93,6 +93,7 @@ export const loginUser = async (req, res) => {
 export const getUserProfile = async (req, res) => {
   try {
     const { username } = req.params;
+    const { userId } = req.query; // get current user id from query params
 
     // find user and exclude password
     const user = await User.findOne({ username })
@@ -102,6 +103,17 @@ export const getUserProfile = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    // check if current user is following this profile
+    let isFollowing = false;
+    if (userId) {
+      const currentUser = await User.findById(userId);
+      if (currentUser) {
+        isFollowing = currentUser.following.some(
+          followingId => followingId.toString() === user._id.toString()
+        );
+      }
     }
 
     // return profile data with counts
@@ -114,6 +126,7 @@ export const getUserProfile = async (req, res) => {
       profilePicture: user.profilePicture,
       followersCount: user.followers.length,
       followingCount: user.following.length,
+      isFollowing: isFollowing,
       createdAt: user.createdAt,
     });
   } catch (error) {
@@ -204,5 +217,63 @@ export const unfollowUser = async (req, res) => {
   } catch (error) {
     console.error('Error en unfollowUser:', error);
     res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// get list of followers for a user
+export const getFollowers = async (req, res) => {
+  try {
+    const { username } = req.params;
+    
+    // find user and get followers list
+    const user = await User.findOne({ username })
+      .populate("followers", "username fullName profilePicture")
+      .populate("following", "_id");
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // add isFollowing flag to each follower
+    const followingIds = user.following.map(f => f._id.toString());
+    const followersWithStatus = user.followers.map(follower => ({
+      ...follower.toObject(),
+      isFollowing: followingIds.includes(follower._id.toString())
+    }));
+
+    // sort alphabetically by fullName
+    followersWithStatus.sort((a, b) => 
+      a.fullName.localeCompare(b.fullName, 'es', { sensitivity: 'base' })
+    );
+
+    res.json({ followers: followersWithStatus });
+  } catch (error) {
+    console.error("Error getting followers:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// get list of users that this user is following
+export const getFollowing = async (req, res) => {
+  try {
+    const { username } = req.params;
+    
+    // find user and get following list
+    const user = await User.findOne({ username })
+      .populate("following", "username fullName profilePicture");
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // sort alphabetically by fullName
+    const sortedFollowing = user.following.sort((a, b) => 
+      a.fullName.localeCompare(b.fullName, 'es', { sensitivity: 'base' })
+    );
+
+    res.json({ following: sortedFollowing });
+  } catch (error) {
+    console.error("Error getting following:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };

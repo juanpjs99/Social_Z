@@ -152,3 +152,28 @@ export const deleteTweet = async (req, res) => {
     res.status(500).json({ message: "Error del servidor" });
   }
 };
+
+// get tweets from specific user
+export const getUserTweets = async (req, res) => {
+  try {
+    const { username } = req.params;
+    
+    // find user first
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // get all tweets from this user
+    const tweets = await Tweet.find({ author: user._id })
+      .populate("author", "username email fullName")
+      .populate("likes", "username")
+      .populate("comments.author", "username email")
+      .sort({ createdAt: -1 });
+
+    res.json(tweets);
+  } catch (error) {
+    console.error("Error getting user tweets:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

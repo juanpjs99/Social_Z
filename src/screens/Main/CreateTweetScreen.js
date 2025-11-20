@@ -42,6 +42,10 @@ export default function CreateTweetScreen({ navigation }) {
   showMessage('Error', 'El tweet no puede estar vacío', { toast: true });
       return;
     }
+    if (text.length > 280) {
+  showMessage('Error', 'El tweet no puede exceder 280 caracteres', { toast: true });
+      return;
+    }
     try {
       const userId = await AsyncStorage.getItem('userId');
       if (!userId) {
@@ -53,6 +57,7 @@ export default function CreateTweetScreen({ navigation }) {
       await crearTweet(userId, text, imageData);
       setText('');
       setImage(null);
+  showMessage('Éxito', 'Tweet publicado correctamente', { toast: true });
       navigation.goBack();
     } catch (e) {
   showMessage('Error', e.response?.data?.message || e.message || 'No se pudo publicar');
@@ -70,7 +75,11 @@ export default function CreateTweetScreen({ navigation }) {
         multiline
         value={text}
         onChangeText={setText}
+        maxLength={280}
       />
+      <Text style={[styles.charCount, text.length > 280 && styles.charCountError]}>
+        {text.length}/280
+      </Text>
       {image && (
         <Image source={{ uri: image.uri }} style={styles.preview} />
       )}
@@ -90,7 +99,9 @@ export default function CreateTweetScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex:1, padding:16, backgroundColor:'#fff' },
   title: { fontSize:20, fontWeight:'700', marginBottom:12 },
-  input: { minHeight:120, borderWidth:1, borderColor:'#ccc', borderRadius:8, padding:10, textAlignVertical:'top', marginBottom:12 },
+  input: { minHeight:120, borderWidth:1, borderColor:'#ccc', borderRadius:8, padding:10, textAlignVertical:'top', marginBottom:8 },
+  charCount: { fontSize:13, color:'#657786', textAlign:'right', marginBottom:12 },
+  charCountError: { color:'#E0245E', fontWeight:'600' },
   preview: { width:'100%', height:200, borderRadius:8, marginBottom:12 },
   buttonsRow: { flexDirection:'row', justifyContent:'space-between', gap:10 },
   btn: { flex:1, paddingVertical:14, borderRadius:8, alignItems:'center', justifyContent:'center' },
