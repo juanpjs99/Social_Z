@@ -12,7 +12,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { getFollowing, unfollowUser } from "../../api/api";
 import Header from "../../components/Header";
 
-export default function FollowingScreen() {
+export default function FollowingScreen({ navigation }) {
   const { user } = useContext(AuthContext);
   const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,10 +72,13 @@ export default function FollowingScreen() {
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <View style={styles.row}>
-              <View>
+              <TouchableOpacity 
+                style={styles.userInfo}
+                onPress={() => navigation.navigate('UserProfile', { username: item.username })}
+              >
                 <Text style={styles.name}>{item.fullName}</Text>
                 <Text style={styles.username}>@{item.username}</Text>
-              </View>
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => handleUnfollow(item)}
@@ -117,6 +120,9 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#e1e8ed",
+  },
+  userInfo: {
+    flex: 1,
   },
   name: { 
     fontWeight: "700", 

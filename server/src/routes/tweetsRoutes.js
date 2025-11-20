@@ -1,5 +1,5 @@
 import express from "express";
-import { createTweet, getTweets, deleteTweet, toggleLike, addComment, deleteComment } from "../controllers/tweetController.js";
+import { createTweet, getTweets, deleteTweet, toggleLike, addComment, deleteComment, getUserTweets } from "../controllers/tweetController.js";
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -25,6 +25,7 @@ const router = express.Router();
 // Usamos upload.single('image') para aceptar fichero multipart/form-data
 router.post("/", upload.single('image'), createTweet);   // crear tweet
 router.get("/", getTweets);      // obtener tweets
+router.get("/user/:username", getUserTweets); // get tweets from specific user
 router.delete("/:id", deleteTweet); // borrar tweet
 
 // Like

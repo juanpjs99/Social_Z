@@ -25,8 +25,10 @@ export default function CommentsScreen({ route, navigation }) {
       setSending(true);
       await agregarComentario(tweet._id, userId, comment.trim());
       setComment('');
-      refreshHome?.();
   showMessage('Éxito', 'Comentario agregado', { toast: true });
+      // go back and refresh home screen
+      navigation.goBack();
+      refreshHome?.();
     } catch (e) {
   showMessage('Error', e.response?.data?.message || e.message || 'No se pudo comentar');
     } finally {
@@ -74,7 +76,9 @@ export default function CommentsScreen({ route, navigation }) {
         {tweet.comments?.length ? tweet.comments.map(c => (
           <View key={c._id} style={styles.comment}> 
             <View style={styles.commentHeader}> 
-              <Text style={styles.commentAuthor}>@{c.author?.username}</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('UserProfile', { username: c.author?.username })}>
+                <Text style={styles.commentAuthor}>@{c.author?.username}</Text>
+              </TouchableOpacity>
               <Text style={styles.date}>{new Date(c.createdAt).toLocaleDateString('es-ES')}</Text>
             </View>
             <Text style={styles.commentText}>{c.text}</Text>

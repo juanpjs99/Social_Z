@@ -11,6 +11,7 @@ import FollowersScreen from "../screens/Main/FollowersScreen";
 import FollowingScreen from "../screens/Main/FollowingsScreen";
 import ProfileScreen from "../screens/Main/ProfileScreen";
 import EditProfileScreen from "../screens/Main/EditProfileScreen";
+import UserProfileScreen from "../screens/Main/UserProfileScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -38,6 +39,16 @@ function ProfileStack({ setUser }) {
       <Stack.Screen
         name="Following"
         component={FollowingScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Comments"
+        component={CommentsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UserProfile"
+        component={UserProfileScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
@@ -68,6 +79,7 @@ export default function MainTabs({ setUser }) {
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="CreateTweet" component={CreateTweetScreen} />
             <Stack.Screen name="Comments" component={CommentsScreen} />
+            <Stack.Screen name="UserProfile" component={UserProfileScreen} />
           </Stack.Navigator>
         )}
       </Tab.Screen>

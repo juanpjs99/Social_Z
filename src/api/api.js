@@ -53,6 +53,22 @@ export const obtenerTweets = async () => {
   }
 };
 
+// get tweets from specific user
+export const getUserTweets = async (username) => {
+  try {
+    const res = await axios.get(`${API_URL}/tweets/user/${username}`);
+    return (res.data || []).map(t => {
+      if (t.image && typeof t.image === 'string' && t.image.startsWith('/uploads')) {
+        return { ...t, image: `http://10.0.2.2:5000${t.image}` };
+      }
+      return t;
+    });
+  } catch (error) {
+    console.error("Error getting user tweets:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const eliminarTweet = async (tweetId, userId) => {
   try {
     const res = await axios.delete(`${API_URL}/tweets/${tweetId}`, {
@@ -99,9 +115,13 @@ export const eliminarComentario = async (tweetId, commentId) => {
 };
 
 // fetch user profile by username
-export const getUserProfile = async (username) => {
+export const getUserProfile = async (username, userId = null) => {
   try {
-    const res = await fetch(`${API_URL}/users/profile/${username}`, {
+    let url = `${API_URL}/users/profile/${username}`;
+    if (userId) {
+      url += `?userId=${userId}`;
+    }
+    const res = await fetch(url, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });

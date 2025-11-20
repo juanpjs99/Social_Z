@@ -12,44 +12,66 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { AuthContext } from "../../context/AuthContext";
-import { getUserProfile, getUserTweets } from "../../api/api";
+import { getUserProfile, getUserTweets, followUser, unfollowUser } from "../../api/api";
 import Header from "../../components/Header";
 
-export default function ProfileScreen({ navigation }) {
+export default function UserProfileScreen({ navigation, route }) {
   const { user } = useContext(AuthContext);
+  const { username } = route.params;
   const [profileData, setProfileData] = useState(null);
   const [tweets, setTweets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingTweets, setLoadingTweets] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
 
-  // load profile data and tweets
+  // load user profile and tweets
   const loadProfile = useCallback(async () => {
     setLoading(true);
     try {
-      if (user && user.username) {
-        const data = await getUserProfile(user.username);
-        setProfileData(data);
-        
-        // load user tweets
-        setLoadingTweets(true);
-        const userTweets = await getUserTweets(user.username);
-        setTweets(userTweets);
-        setLoadingTweets(false);
-      }
+      const data = await getUserProfile(username, user.id);
+      setProfileData(data);
+      
+      // set isFollowing from backend response
+      setIsFollowing(data.isFollowing || false);
+      
+      // load user tweets
+      setLoadingTweets(true);
+      const userTweets = await getUserTweets(username);
+      setTweets(userTweets);
+      setLoadingTweets(false);
     } catch (error) {
       console.error("Error loading profile:", error);
       setLoadingTweets(false);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [username, user.id]);
 
-  // reload profile every time screen comes into focus
+  // reload profile when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       loadProfile();
     }, [loadProfile])
   );
+
+  // handle follow/unfollow
+  const handleFollowToggle = async () => {
+    try {
+      setFollowLoading(true);
+      if (isFollowing) {
+        await unfollowUser(profileData.id, user.id);
+      } else {
+        await followUser(profileData.id, user.id);
+      }
+      // reload profile to update counts and follow status
+      await loadProfile();
+    } catch (error) {
+      console.error("Error toggling follow:", error);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -90,7 +112,7 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Header title="Profile" />
+      <Header title={`@${username}`} />
       <ScrollView style={styles.scrollContent}>
         {/* Header with cover and profile pic */}
         <View style={styles.header}>
@@ -119,13 +141,22 @@ export default function ProfileScreen({ navigation }) {
               <Text style={styles.username}>@{profileData?.username || "username"}</Text>
             </View>
 
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => navigation.navigate("EditProfile", { profileData })}
-            >
-              <Ionicons name="create-outline" size={18} color="#14171A" />
-              <Text style={styles.editButtonText}>Edit</Text>
-            </TouchableOpacity>
+            {/* Follow button - only show if not own profile */}
+            {username !== user.username && (
+              <TouchableOpacity
+                style={[styles.followButton, isFollowing && styles.followingButton]}
+                onPress={handleFollowToggle}
+                disabled={followLoading}
+              >
+                {followLoading ? (
+                  <ActivityIndicator size="small" color={isFollowing ? "#14171A" : "#fff"} />
+                ) : (
+                  <Text style={[styles.followButtonText, isFollowing && styles.followingText]}>
+                    {isFollowing ? "Following" : "Follow"}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            )}
           </View>
 
           {/* Bio */}
@@ -135,21 +166,15 @@ export default function ProfileScreen({ navigation }) {
 
           {/* Stats - Followers and Following */}
           <View style={styles.statsRow}>
-            <TouchableOpacity 
-              style={styles.stat}
-              onPress={() => navigation.navigate('Following')}
-            >
+            <View style={styles.stat}>
               <Text style={styles.statNumber}>{profileData?.followingCount || 0}</Text>
               <Text style={styles.statLabel}>Following</Text>
-            </TouchableOpacity>
+            </View>
 
-            <TouchableOpacity 
-              style={styles.stat}
-              onPress={() => navigation.navigate('Followers')}
-            >
+            <View style={styles.stat}>
               <Text style={styles.statNumber}>{profileData?.followersCount || 0}</Text>
               <Text style={styles.statLabel}>Followers</Text>
-            </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -248,19 +273,23 @@ const styles = StyleSheet.create({
     color: "#657786",
     marginTop: 2,
   },
-  editButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
+  followButton: {
+    paddingHorizontal: 20,
     paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: "#1DA1F2",
+  },
+  followingButton: {
+    backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "#e1e8ed",
-    borderRadius: 20,
-    gap: 6,
   },
-  editButtonText: {
+  followButtonText: {
     fontSize: 14,
     fontWeight: "600",
+    color: "#fff",
+  },
+  followingText: {
     color: "#14171A",
   },
   bio: {

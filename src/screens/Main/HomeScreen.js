@@ -1,6 +1,7 @@
 
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
@@ -28,8 +29,9 @@ export default function HomeScreen({ navigation }) {
   // Real userId obtained from storage (saved when logging in)
   const [userId, setUserId] = useState(null);
 
+  // load userId on mount
   useEffect(() => {
-    const load = async () => {
+    const loadUserId = async () => {
       try {
         let id = await AsyncStorage.getItem('userId');
         if (!id) {
@@ -45,10 +47,16 @@ export default function HomeScreen({ navigation }) {
       } catch (e) {
         console.error('Error loading userId:', e);
       }
-      cargarTweets();
     };
-    load();
+    loadUserId();
   }, []);
+
+  // reload tweets when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      cargarTweets();
+    }, [])
+  );
 
   const cargarTweets = async () => {
     try {
@@ -142,9 +150,16 @@ export default function HomeScreen({ navigation }) {
                 const { header, body } = formatTweet(item.author, item.text || item.content, item.createdAt || item.timestamp);
                 return (
                   <View>
-                    <View style={styles.tweetHeaderRow}>
+                    <TouchableOpacity 
+                      style={styles.tweetHeaderRow}
+                      onPress={() => {
+                        if (item.author?.username) {
+                          navigation.navigate('UserProfile', { username: item.author.username });
+                        }
+                      }}
+                    >
                       <Text style={styles.tweetHeaderText}>{header}</Text>
-                    </View>
+                    </TouchableOpacity>
                     {item.author?._id !== userId && (
                       item.author?.followers?.some(f => f.toString() === userId) ? (
                         <TouchableOpacity style={styles.unfollowBtn} onPress={async () => {

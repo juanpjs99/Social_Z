@@ -12,7 +12,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { getFollowers, followUser, unfollowUser } from "../../api/api";
 import Header from "../../components/Header";
 
-export default function FollowersScreen() {
+export default function FollowersScreen({ navigation }) {
   const { user } = useContext(AuthContext);
   const [followers, setFollowers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -80,10 +80,13 @@ export default function FollowersScreen() {
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <View style={styles.row}>
-              <View>
+              <TouchableOpacity 
+                style={styles.userInfo}
+                onPress={() => navigation.navigate('UserProfile', { username: item.username })}
+              >
                 <Text style={styles.name}>{item.fullName}</Text>
                 <Text style={styles.username}>@{item.username}</Text>
-              </View>
+              </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, item.isFollowing && styles.followingButton]}
                 onPress={() => handleFollowToggle(item)}
@@ -127,6 +130,9 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#e1e8ed",
+  },
+  userInfo: {
+    flex: 1,
   },
   name: { 
     fontWeight: "700", 
