@@ -241,6 +241,11 @@ export const getFollowers = async (req, res) => {
       isFollowing: followingIds.includes(follower._id.toString())
     }));
 
+    // sort alphabetically by fullName
+    followersWithStatus.sort((a, b) => 
+      a.fullName.localeCompare(b.fullName, 'es', { sensitivity: 'base' })
+    );
+
     res.json({ followers: followersWithStatus });
   } catch (error) {
     console.error("Error getting followers:", error);
@@ -261,7 +266,12 @@ export const getFollowing = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json({ following: user.following });
+    // sort alphabetically by fullName
+    const sortedFollowing = user.following.sort((a, b) => 
+      a.fullName.localeCompare(b.fullName, 'es', { sensitivity: 'base' })
+    );
+
+    res.json({ following: sortedFollowing });
   } catch (error) {
     console.error("Error getting following:", error);
     res.status(500).json({ message: "Server error" });
