@@ -84,60 +84,83 @@ export default function Header({ title, showBackButton = false }) {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+
+    paddingHorizontal: 18,
     paddingTop: 50,
     paddingBottom: 15,
-    backgroundColor: '#fff',
+
+    backgroundColor: "#ffffff",
+
     borderBottomWidth: 1,
-    borderBottomColor: '#e1e8ed',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    borderBottomColor: "#e5e5e5",
+
+    // Sombra premium
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
   },
+
   leftSection: {
     width: 50,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
+    alignItems: "flex-start",
+    justifyContent: "center",
   },
+
   centerSection: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
+
   rightSection: {
     width: 50,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
+
   logoContainer: {
-    padding: 5,
+    padding: 6,
+    borderRadius: 12,
   },
+
   logo: {
-    width: 35,
-    height: 35,
+    width: 38,
+    height: 38,
+    resizeMode: "contain",
   },
+
   title: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#14171a',
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1a1a1a", // Text Dark
+    letterSpacing: 0.3,
   },
+
   username: {
     fontSize: 15,
-    color: '#657786',
-    fontWeight: '600',
+    color: "#657786",
+    fontWeight: "600",
+    marginTop: 2,
   },
+
   logoutButton: {
     padding: 8,
-    borderRadius: 20,
-    backgroundColor: '#FFF5F5',
+    borderRadius: 50,
+
+    backgroundColor: "#fde7f8", // suave derivado del primary (#8e1f7f)
+    borderWidth: 1,
+    borderColor: "#f7c4ef",
   },
+
   logoutIcon: {
     width: 24,
     height: 24,
+    tintColor: "#8e1f7f", // Primary
   },
 });
+

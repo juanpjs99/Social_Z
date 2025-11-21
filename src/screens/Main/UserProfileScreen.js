@@ -213,183 +213,220 @@ export default function UserProfileScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#F5F5F5", // Gray100
   },
+
   scrollContent: {
     flex: 1,
   },
+
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+
   header: {
     position: "relative",
   },
+
   coverPhoto: {
     width: "100%",
     height: 120,
-    backgroundColor: "#1DA1F2",
+    backgroundColor: "#B845A8", // PrimaryLight
   },
+
   profilePicContainer: {
     position: "absolute",
     bottom: -40,
     left: 15,
   },
+
   profilePic: {
     width: 80,
     height: 80,
     borderRadius: 40,
     borderWidth: 4,
-    borderColor: "#fff",
+    borderColor: "#F5F5F5", // Gray100
   },
+
   defaultPic: {
-    backgroundColor: "#AAB8C2",
+    backgroundColor: "#8E1F7F", // Primary
     justifyContent: "center",
     alignItems: "center",
   },
+
   defaultPicText: {
     fontSize: 32,
     fontWeight: "700",
-    color: "#fff",
+    color: "#FFFFFF",
   },
+
   infoSection: {
     marginTop: 50,
     paddingHorizontal: 15,
   },
+
   nameRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
     marginBottom: 10,
   },
+
   fullName: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#14171A",
+    color: "#1A1A1A", // DarkText
   },
+
   username: {
     fontSize: 15,
-    color: "#657786",
+    color: "#8A8A8A", // Gray500
     marginTop: 2,
   },
+
   followButton: {
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: "#1DA1F2",
+    backgroundColor: "#8E1F7F", // Primary
   },
+
   followingButton: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#e1e8ed",
+    borderColor: "#DCDCDC", // Gray300
   },
+
   followButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#fff",
+    color: "#FFFFFF",
   },
+
   followingText: {
-    color: "#14171A",
+    color: "#1A1A1A", // DarkText
   },
+
   bio: {
     fontSize: 15,
-    color: "#14171A",
+    color: "#1A1A1A",
     marginBottom: 15,
     lineHeight: 20,
   },
+
   statsRow: {
     flexDirection: "row",
     marginTop: 10,
     marginBottom: 15,
   },
+
   stat: {
     flexDirection: "row",
     marginRight: 20,
     alignItems: "baseline",
   },
+
   statNumber: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#14171A",
+    color: "#1A1A1A",
     marginRight: 4,
   },
+
   statLabel: {
     fontSize: 15,
-    color: "#657786",
+    color: "#8A8A8A", // Gray500
   },
+
   tabsContainer: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderBottomColor: "#e1e8ed",
+    borderBottomColor: "#DCDCDC", // Gray300
     marginTop: 10,
   },
+
   tab: {
     flex: 1,
     paddingVertical: 15,
     alignItems: "center",
   },
+
   activeTab: {
     borderBottomWidth: 3,
-    borderBottomColor: "#1DA1F2",
+    borderBottomColor: "#8E1F7F", // Primary
   },
+
   tabText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#657786",
+    color: "#8A8A8A", // Gray500
   },
+
   activeTabText: {
-    color: "#1DA1F2",
+    color: "#8E1F7F", // Primary
   },
+
   tweetsContainer: {
     padding: 20,
     alignItems: "center",
   },
+
   placeholderText: {
-    color: "#AAB8C2",
+    color: "#8A8A8A",
     fontSize: 15,
   },
+
   tweetCard: {
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#e1e8ed",
+    borderBottomColor: "#DCDCDC",
   },
+
   tweetHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 8,
   },
+
   tweetAuthor: {
     fontWeight: "600",
-    color: "#14171A",
+    color: "#1A1A1A",
   },
+
   tweetDate: {
     fontSize: 12,
-    color: "#657786",
+    color: "#8A8A8A",
   },
+
   tweetText: {
     fontSize: 15,
-    color: "#14171A",
+    color: "#1A1A1A",
     marginBottom: 10,
     lineHeight: 20,
   },
+
   tweetImage: {
     width: "100%",
     height: 200,
     borderRadius: 12,
     marginBottom: 10,
   },
+
   tweetStats: {
     flexDirection: "row",
     gap: 20,
   },
+
   statItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
+
   statText: {
     fontSize: 13,
-    color: "#657786",
+    color: "#8A8A8A",
   },
 });

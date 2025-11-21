@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Import screens (ajustado a tu estructura)
 import HomeScreen from "../screens/Main/HomeScreen";
@@ -12,6 +12,16 @@ import FollowingScreen from "../screens/Main/FollowingsScreen";
 import ProfileScreen from "../screens/Main/ProfileScreen";
 import EditProfileScreen from "../screens/Main/EditProfileScreen";
 import UserProfileScreen from "../screens/Main/UserProfileScreen";
+
+//import de imagenes de navegador
+import { Image } from "react-native";
+
+import homeIcon from "../assets/home.png";
+import followersIcon from "../assets/followers.png";
+import followingIcon from "../assets/following.png";
+import profileIcon from "../assets/profile.png";
+
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -59,20 +69,33 @@ export default function MainTabs({ setUser }) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerShown: false, // Ocultar todos los headers del Tab Navigator
-        tabBarActiveTintColor: "#1DA1F2",
+        headerShown: false,
+        tabBarActiveTintColor: "#8e1f7f",   // tu color principal
         tabBarInactiveTintColor: "gray",
         tabBarStyle: { height: 60, paddingBottom: 5 },
-        tabBarIcon: ({ color, size }) => {
-          let icon = 'ellipse-outline';
-          if (route.name === 'Inicio') icon = 'home-outline';
-          if (route.name === 'Seguidores') icon = 'people-outline';
-          if (route.name === 'Seguidos') icon = 'person-add-outline';
-          if (route.name === 'Perfil') icon = 'person-circle-outline';
-          return <Ionicons name={icon} size={24} color={color} />;
+
+        tabBarIcon: ({ color }) => {
+          let iconSource;
+
+          if (route.name === "Inicio") iconSource = homeIcon;
+          if (route.name === "Seguidores") iconSource = followersIcon;
+          if (route.name === "Seguidos") iconSource = followingIcon;
+          if (route.name === "Perfil") iconSource = profileIcon;
+
+          return (
+            <Image
+              source={iconSource}
+              style={{
+                width: 26,
+                height: 26,
+                tintColor: color,  // respeta active/inactive tint
+              }}
+            />
+          );
         },
       })}
     >
+
       <Tab.Screen name="Inicio">
         {() => (
           <Stack.Navigator screenOptions={{ headerShown:false }}>

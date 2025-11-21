@@ -172,109 +172,153 @@ export default function EditProfileScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
   },
+
+  /** ---------------- HEADER ---------------- **/
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 15,
+
+    paddingHorizontal: 18,
     paddingTop: 50,
-    paddingBottom: 12,
+    paddingBottom: 14,
+
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: "#e1e8ed",
+    borderBottomColor: "#e7e7e7",
+
+    // Sombra suave y elegante
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
+
   headerTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "700",
-    color: "#14171A",
+    color: "#1a1a1a",
+    letterSpacing: 0.3,
   },
+
   saveButton: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#1DA1F2",
+    fontWeight: "700",
+    color: "#8e1f7f", // Primary
   },
+
+  /** ---------------- FOTO DE PORTADA ---------------- **/
   coverPhoto: {
     width: "100%",
-    height: 120,
-    backgroundColor: "#1DA1F2",
+    height: 130,
+    backgroundColor: "#b845a8", // Primary Light
   },
+
+  /** ---------------- FOTO DE PERFIL ---------------- **/
   profilePicSection: {
     alignItems: "center",
-    marginTop: -40,
-    marginBottom: 20,
+    marginTop: -45,
+    marginBottom: 25,
   },
+
   profilePicContainer: {
     position: "relative",
   },
+
   profilePic: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     borderWidth: 4,
     borderColor: "#fff",
   },
+
   defaultPic: {
-    backgroundColor: "#AAB8C2",
+    backgroundColor: "#dcdcdc",
     justifyContent: "center",
     alignItems: "center",
   },
+
   defaultPicText: {
-    fontSize: 40,
+    fontSize: 38,
     fontWeight: "700",
-    color: "#fff",
+    color: "#ffffff",
   },
+
   cameraIcon: {
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: "#1DA1F2",
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    backgroundColor: "#8e1f7f",
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 3,
     borderColor: "#fff",
+
+    shadowColor: "#8e1f7f",
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5,
   },
+
+  /** ---------------- FORMULARIO ---------------- **/
   form: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 18,
   },
+
   inputGroup: {
     marginBottom: 25,
   },
+
   label: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#657786",
-    marginBottom: 8,
+    color: "#4a4a4a",
+    marginBottom: 6,
   },
+
   input: {
     borderWidth: 1,
-    borderColor: "#e1e8ed",
-    borderRadius: 8,
-    padding: 12,
+    borderColor: "#dcdcdc",
+    borderRadius: 10,
+    padding: 14,
     fontSize: 16,
-    color: "#14171A",
+    color: "#1a1a1a",
     backgroundColor: "#fff",
+
+    shadowColor: "#000",
+    shadowOpacity: 0.03,
+    shadowRadius: 3,
+    elevation: 1,
   },
+
   bioInput: {
-    height: 100,
+    height: 110,
     textAlignVertical: "top",
   },
+
   disabledInput: {
-    backgroundColor: "#f7f9fa",
-    color: "#657786",
+    backgroundColor: "#f2f2f2",
+    color: "#8a8a8a",
   },
+
   charCount: {
     textAlign: "right",
     fontSize: 12,
-    color: "#AAB8C2",
+    color: "#8a8a8a",
     marginTop: 4,
   },
+
   helperText: {
     fontSize: 12,
-    color: "#AAB8C2",
+    color: "#8a8a8a",
     marginTop: 4,
   },
 });
+

@@ -103,50 +103,76 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 30,
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5", // Gray100
   },
+
   title: {
     fontSize: 28,
     fontWeight: "700",
     marginBottom: 30,
     textAlign: "center",
-    color: "#222",
+    color: "#1a1a1a", // Text Dark
   },
+
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
+    borderColor: "#dcdcdc", // Gray300
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 18,
     fontSize: 16,
-    color: "#333",
+    color: "#1a1a1a",
+    backgroundColor: "#ffffff",
+    
+    // Sombras suaves, estilo moderno
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
   },
+
   button: {
-    backgroundColor: "#8e1f7fff",
+    backgroundColor: "#8e1f7f", // Primary
     paddingVertical: 14,
-    borderRadius: 8,
-    marginTop: 10,
+    borderRadius: 12,
+    marginTop: 12,
+
+    // Sombra del color principal (bonito efecto glow)
+    shadowColor: "#8e1f7f",
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 5,
   },
+
   buttonText: {
-    color: "#fff",
+    color: "#ffffff",
     fontSize: 18,
     textAlign: "center",
+    fontWeight: "700",
+    letterSpacing: 0.4,
+  },
+
+  link: {
+    marginTop: 22,
+    color: "#b845a8", // Primary Light
+    textAlign: "center",
+    fontSize: 15,
     fontWeight: "600",
   },
-  link: {
-    marginTop: 20,
-    color: "#8e1f7fff",
-    textAlign: "center",
-    fontSize: 16,
-  },
+
   logoContainer: {
-    width: "100%",          // ocupa todo el ancho del contenedor
-    alignItems: "center",   // centra horizontalmente
-    marginBottom: 20,       // espacio debajo del logo
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 35,
   },
+
   logo: {
-    width: 120,
-    height: 120,
-    resizeMode: "contain",  // mantiene proporción
+    width: 140,
+    height: 140,
+    resizeMode: "contain",
   },
 });
+
+

@@ -106,61 +106,74 @@ export default function FollowersScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: "#fff" 
+    backgroundColor: "#F5F5F5", // Gray100
   },
+
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
+
   emptyText: {
     fontSize: 16,
-    color: "#657786",
+    color: "#8A8A8A", // Gray500
   },
+
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#e1e8ed",
+    borderBottomColor: "#DCDCDC", // Gray300
+    backgroundColor: "#FFFFFF",
   },
+
   userInfo: {
     flex: 1,
   },
+
   name: { 
     fontWeight: "700", 
     fontSize: 16,
-    color: "#14171A",
+    color: "#1A1A1A", // Dark Text
   },
+
   username: { 
-    color: "#657786",
+    color: "#8A8A8A", // Gray500
     fontSize: 14,
     marginTop: 2,
   },
+
   button: {
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: "#1DA1F2",
+    backgroundColor: "#8E1F7F", // Primary color
   },
+
   followingButton: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#e1e8ed",
+    borderColor: "#DCDCDC", // Gray300
   },
+
   buttonText: {
-    color: "#fff",
+    color: "#FFFFFF",
     fontWeight: "600",
     fontSize: 14,
   },
+
   followingText: {
-    color: "#14171A",
+    color: "#1A1A1A",
   },
 });
+

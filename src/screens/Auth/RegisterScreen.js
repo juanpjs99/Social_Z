@@ -89,7 +89,7 @@ export default function RegisterScreen({ navigation }) {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={styles.linkText}>¿Ya tienes cuenta? Inicia sesión</Text>
+        <Text style={styles.link}>¿Ya tienes cuenta? Inicia sesión</Text>
       </TouchableOpacity>
     </View>
   );
@@ -100,50 +100,67 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 30,
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5", // Gray100 fondo limpio
   },
+
   title: {
     fontSize: 28,
     fontWeight: "700",
     marginBottom: 30,
     textAlign: "center",
-    color: "#222",
+    color: "#1a1a1a", // Text Dark
   },
+
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
+    borderColor: "#dcdcdc", // Gray300
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 18,
     fontSize: 16,
-    color: "#333",
+    color: "#1a1a1a",
+    backgroundColor: "#ffffff",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
+
   button: {
-    backgroundColor: "#8e1f7fff",
+    backgroundColor: "#8e1f7f", // Primary
     paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 10,
     marginTop: 10,
+    shadowColor: "#8e1f7f",
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
   },
+
   buttonText: {
-    color: "#fff",
+    color: "#ffffff", // Text Light
     fontSize: 18,
     textAlign: "center",
+    fontWeight: "700",
+  },
+
+  link: {
+    marginTop: 22,
+    color: "#b845a8", // Primary Light
+    textAlign: "center",
+    fontSize: 15,
     fontWeight: "600",
   },
-  link: {
-    marginTop: 20,
-    color: "#8e1f7fff",
-    textAlign: "center",
-    fontSize: 16,
-  },
+
   logoContainer: {
-    width: "100%",          // ocupa todo el ancho del contenedor
-    alignItems: "center",   // centra horizontalmente
-    marginBottom: 20,       // espacio debajo del logo
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 30,
   },
+
   logo: {
-    width: 120,
-    height: 120,
-    resizeMode: "contain",  // mantiene proporción
+    width: 130,
+    height: 130,
+    resizeMode: "contain",
   },
 });

@@ -230,170 +230,198 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1, backgroundColor: "#F2E7F0" },
+
   tweetCard: {
-    backgroundColor: "#f8f9fa",
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 10,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 12,
     marginHorizontal: 15,
+    borderWidth: 1,
+    borderColor: "#E6D5E4",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
-  tweetHeaderText:{ fontWeight:'600', fontSize:13, color:'#222' },
-  tweetBody:{ marginTop:8, fontSize:14, color:'#000', lineHeight:20, marginBottom:6 },
+
+  tweetHeaderText: { fontWeight: "600", fontSize: 13, color: "#1A1A1A" },
+  tweetBody: {
+    marginTop: 8,
+    fontSize: 14,
+    color: "#444",
+    lineHeight: 20,
+    marginBottom: 6,
+  },
 
   // Modal
   modalBackground: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.45)",
     justifyContent: "center",
     paddingHorizontal: 20,
   },
   modalContainer: {
     backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 20,
+    borderRadius: 12,
+    padding: 22,
   },
   input: {
     minHeight: 80,
-    borderColor: "#ccc",
+    borderColor: "#D7C0D6",
     borderWidth: 1,
-    borderRadius: 6,
-    padding: 10,
+    borderRadius: 8,
+    padding: 12,
     marginBottom: 15,
     textAlignVertical: "top",
   },
+
   modalButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
+
   modalActionBtn: {
     flex: 1,
     marginHorizontal: 4,
-    backgroundColor: '#1DA1F2',
+    backgroundColor: "#8E1F7F",
     paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+    borderRadius: 10,
+    alignItems: "center",
   },
-  modalActionText: { color: '#fff', fontWeight: '600' },
-  primaryBtn: { backgroundColor: '#1DA1F2' },
-  secondaryBtn: { backgroundColor: '#555' },
-  cancelBtn: { backgroundColor: '#ff4d4f' },
-  disabledBtn: { backgroundColor: '#999' },
-  loginHint: { marginTop: 10, color: '#ff4d4f', textAlign: 'center', fontSize: 12 },
+  modalActionText: { color: "#fff", fontWeight: "600" },
+
+  primaryBtn: { backgroundColor: "#8E1F7F" },
+  secondaryBtn: { backgroundColor: "#6B165E" },
+  cancelBtn: { backgroundColor: "#ff4d4f" },
+  disabledBtn: { backgroundColor: "#C8AFC6" },
+
+  loginHint: { marginTop: 10, color: "#ff4d4f", textAlign: "center", fontSize: 12 },
+
   fab: {
-    position: 'absolute',
+    position: "absolute",
     right: 20,
     bottom: 80,
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#1DA1F2',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 8,
-    shadowColor: '#000',
+    backgroundColor: "#8E1F7F",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 10,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
   },
+
   tweetHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 6,
   },
+
   deleteButton: {
-    backgroundColor: '#ff4d4f',
+    backgroundColor: "#ff4d4f",
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 6,
   },
+
   deleteButtonTop: {
-    position: 'absolute',
+    position: "absolute",
     top: 6,
     right: 6,
-    backgroundColor: '#ff4d4f',
+    backgroundColor: "#ff4d4f",
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 6,
     zIndex: 10,
   },
+
   deleteButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
+
   imagePreview: {
-    width: '100%',
+    width: "100%",
     height: 180,
-    borderRadius: 8,
+    borderRadius: 10,
     marginBottom: 10,
   },
+
   tweetImage: {
-    width: '100%',
+    width: "100%",
     height: 200,
-    borderRadius: 8,
+    borderRadius: 10,
     marginTop: 10,
   },
+
   statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 8,
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#E6D5E4",
     marginTop: 10,
     marginBottom: 10,
   },
-  statText: { color: '#555', fontWeight: '600' },
-  actionsRow: { flexDirection: 'row', gap: 10 },
+
+  statText: { color: "#6B165E", fontWeight: "600" },
+
+  actionsRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+
   actionBtn: {
     flex: 1,
-    backgroundColor: '#eef6ff',
+    backgroundColor: "#F7EDF6",
     borderWidth: 1,
-    borderColor: '#1DA1F2',
+    borderColor: "#8E1F7F",
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 10,
   },
+
   likeActive: {
-    backgroundColor: '#e3f2ff',
-    borderColor: '#FF1493',
+    backgroundColor: "#FCE4EC",
+    borderColor: "#E91E63",
   },
-  actionText: { color: '#1DA1F2', fontWeight: '700' },
-  actionTextActive: { color: '#FF1493' },
-  imageButtonContainer: {
-    marginBottom: 10,
-  },
+
+  actionText: { color: "#8E1F7F", fontWeight: "700" },
+  actionTextActive: { color: "#E91E63" },
+
+  imageButtonContainer: { marginBottom: 10 },
+
   followBtn: {
-    backgroundColor: '#2563EB',
+    backgroundColor: "#8E1F7F",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     marginBottom: 6,
   },
-  followBtnText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
+  followBtnText: { color: "#fff", fontSize: 12, fontWeight: "600" },
+
   unfollowBtn: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: '#ff4d4f',
+    borderColor: "#8E1F7F",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     marginBottom: 6,
   },
   unfollowBtnText: {
-    color: '#ff4d4f',
+    color: "#8E1F7F",
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
   },
-
-
-
 });

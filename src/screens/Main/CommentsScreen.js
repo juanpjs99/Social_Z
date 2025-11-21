@@ -95,23 +95,133 @@ export default function CommentsScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container:{ flex:1, backgroundColor:'#fff', padding:16 },
-  title:{ fontSize:20, fontWeight:'700', marginBottom:12 },
-  original:{ backgroundColor:'#f2f6fa', padding:12, borderRadius:8, marginBottom:12 },
-  headerLine:{ fontWeight:'600', fontSize:13, color:'#222' },
-  bodyLine:{ marginTop:8, fontSize:14, color:'#000', lineHeight:20, marginBottom:6 },
-  input:{ minHeight:80, borderWidth:1, borderColor:'#ccc', borderRadius:8, padding:10, textAlignVertical:'top', marginBottom:12 },
-  btn:{ paddingVertical:12, borderRadius:8, alignItems:'center', marginBottom:16 },
-  primary:{ backgroundColor:'#1DA1F2' },
-  disabled:{ backgroundColor:'#999' },
-  btnText:{ color:'#fff', fontWeight:'600' },
-  comments:{ flex:1 },
-  comment:{ paddingVertical:12, borderBottomWidth:1, borderBottomColor:'#eee' },
-  commentHeader:{ flexDirection:'row', justifyContent:'space-between', marginBottom:4 },
-  commentAuthor:{ fontWeight:'600', color:'#1DA1F2' },
-  date:{ fontSize:12, color:'#666' },
-  commentText:{ color:'#222', marginBottom:6 },
-  deleteBtn:{ alignSelf:'flex-start', backgroundColor:'#ffe0e0', paddingHorizontal:10, paddingVertical:6, borderRadius:6 },
-  deleteText:{ color:'#d80000', fontWeight:'600', fontSize:12 },
-  empty:{ textAlign:'center', marginTop:20, color:'#666' }
+  container: { 
+    flex: 1, 
+    backgroundColor: "#ffffff", 
+    padding: 16 
+  },
+
+  title: { 
+    fontSize: 22, 
+    fontWeight: "700", 
+    marginBottom: 14,
+    color: "#1a1a1a",
+  },
+
+  original: { 
+    backgroundColor: "#f6eff5", // Suave tono morado claro
+    padding: 12, 
+    borderRadius: 10, 
+    marginBottom: 14 
+  },
+
+  headerLine: { 
+    fontWeight: "700", 
+    fontSize: 14, 
+    color: "#3a0035" // Texto oscuro con matiz morado
+  },
+
+  bodyLine: { 
+    marginTop: 8, 
+    fontSize: 15, 
+    color: "#1a1a1a", 
+    lineHeight: 20, 
+    marginBottom: 6 
+  },
+
+  input: { 
+    minHeight: 90,
+    borderWidth: 1,
+    borderColor: "#d8b4d5", // Borde morado claro
+    borderRadius: 10,
+    padding: 12,
+    textAlignVertical: "top",
+    marginBottom: 14,
+    backgroundColor: "#fff",
+    fontSize: 15,
+    color: "#1a1a1a",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+
+  btn: { 
+    paddingVertical: 14, 
+    borderRadius: 10, 
+    alignItems: "center", 
+    marginBottom: 16,
+    shadowColor: "#8e1f7f",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+
+  primary: { 
+    backgroundColor: "#8e1f7f", // Primary
+  },
+
+  disabled: { 
+    backgroundColor: "#b845a8", // Primary Light suavizado
+    opacity: 0.5,
+  },
+
+  btnText: { 
+    color: "#ffffff", 
+    fontWeight: "700", 
+    fontSize: 15 
+  },
+
+  comments: { 
+    flex: 1 
+  },
+
+  comment: { 
+    paddingVertical: 14, 
+    borderBottomWidth: 1, 
+    borderBottomColor: "#eee" 
+  },
+
+  commentHeader: { 
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    marginBottom: 4 
+  },
+
+  commentAuthor: { 
+    fontWeight: "700", 
+    color: "#8e1f7f" // Ahora combina con la identidad visual
+  },
+
+  date: { 
+    fontSize: 12, 
+    color: "#777" 
+  },
+
+  commentText: { 
+    color: "#1a1a1a", 
+    marginBottom: 6,
+    fontSize: 14
+  },
+
+  deleteBtn: { 
+    alignSelf: "flex-start", 
+    backgroundColor: "#ffebf0", // Rosa suave elegante
+    paddingHorizontal: 12, 
+    paddingVertical: 6, 
+    borderRadius: 8 
+  },
+
+  deleteText: { 
+    color: "#d80000", 
+    fontWeight: "700", 
+    fontSize: 12 
+  },
+
+  empty: { 
+    textAlign: "center", 
+    marginTop: 20, 
+    color: "#777",
+    fontSize: 14,
+  }
 });

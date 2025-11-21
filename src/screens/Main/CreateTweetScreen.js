@@ -97,18 +97,106 @@ export default function CreateTweetScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex:1, padding:16, backgroundColor:'#fff' },
-  title: { fontSize:20, fontWeight:'700', marginBottom:12 },
-  input: { minHeight:120, borderWidth:1, borderColor:'#ccc', borderRadius:8, padding:10, textAlignVertical:'top', marginBottom:8 },
-  charCount: { fontSize:13, color:'#657786', textAlign:'right', marginBottom:12 },
-  charCountError: { color:'#E0245E', fontWeight:'600' },
-  preview: { width:'100%', height:200, borderRadius:8, marginBottom:12 },
-  buttonsRow: { flexDirection:'row', justifyContent:'space-between', gap:10 },
-  btn: { flex:1, paddingVertical:14, borderRadius:8, alignItems:'center', justifyContent:'center' },
-  publishBtn: { flexDirection:'row' },
-  btnIcon:{ width:22, height:22, marginRight:8, resizeMode:'contain' },
-  primary: { backgroundColor:'#1DA1F2' },
-  secondary: { backgroundColor:'#555' },
-  disabled: { backgroundColor:'#999' },
-  btnText: { color:'#fff', fontWeight:'600' }
+  container: { 
+    flex: 1, 
+    padding: 16, 
+    backgroundColor: "#ffffff" 
+  },
+
+  title: { 
+    fontSize: 22, 
+    fontWeight: "700",
+    marginBottom: 14,
+    color: "#1a1a1a",
+  },
+
+  input: { 
+    minHeight: 120,
+    borderWidth: 1,
+    borderColor: "#dcdcdc", // Gray300
+    borderRadius: 10,
+    padding: 12,
+    textAlignVertical: "top",
+    marginBottom: 10,
+    fontSize: 16,
+    color: "#1a1a1a",
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+
+  charCount: { 
+    fontSize: 13, 
+    color: "#8a8a8a", // Gray500
+    textAlign: "right",
+    marginBottom: 12,
+  },
+
+  charCountError: { 
+    color: "#E0245E", 
+    fontWeight: "700" 
+  },
+
+  preview: { 
+    width: "100%", 
+    height: 200, 
+    borderRadius: 12, 
+    marginBottom: 14,
+    backgroundColor: "#f5f5f5",
+  },
+
+  buttonsRow: { 
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    gap: 10 
+  },
+
+  btn: { 
+    flex: 1, 
+    paddingVertical: 14, 
+    borderRadius: 10, 
+    alignItems: "center", 
+    justifyContent: "center",
+    flexDirection: "row",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+
+  publishBtn: { 
+    flexDirection: "row" 
+  },
+
+  btnIcon: { 
+    width: 22, 
+    height: 22, 
+    marginRight: 8, 
+    resizeMode: "contain" 
+  },
+
+  /** ----- BUTTON COLORS  ----- **/
+
+  primary: { 
+    backgroundColor: "#8e1f7f", // Primary
+    shadowColor: "#8e1f7f",
+  },
+
+  secondary: { 
+    backgroundColor: "#4a4a4a", // Gray700
+  },
+
+  disabled: { 
+    backgroundColor: "#b845a8", // Primary Light desaturado
+    opacity: 0.5,
+  },
+
+  btnText: { 
+    color: "#ffffff", 
+    fontWeight: "700", 
+    fontSize: 16,
+  },
 });
+
